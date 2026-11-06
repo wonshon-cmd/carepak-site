@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Carepak Admin</title>
+<style>
+:root{--blue:#00a9ee;--ink:#142631;--muted:#657d89;--line:#dcecf3;--pale:#edf9ff;--yellow:#fff16a;--red:#ad3e35}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f7fbfd}
+button,input{font:inherit}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 5%;background:#fff;border-bottom:1px solid var(--line)}
+.logo{font-size:24px;font-weight:bold;letter-spacing:-1px}.logo b{color:var(--blue);font-weight:400}.logo small{font-size:12px;color:var(--muted);font-weight:400;letter-spacing:0;margin-left:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 5%}
+.btn{border:0;border-radius:7px;padding:11px 18px;background:var(--yellow);cursor:pointer;font-size:14px}
+.btn:hover{background:#ffe945}.btn.ghost{background:#fff;border:1px solid #cfe4ef}.btn.ghost:hover{background:var(--pale)}
+.btn:disabled{opacity:.6;cursor:wait}
+input{border:1px solid #cbdfe9;border-radius:7px;padding:12px 14px;background:#fff;width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.login{max-width:380px;margin:12vh auto 0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px}
+.login h1{font-weight:400;letter-spacing:-1px;margin:0 0 6px}
+.login p{color:var(--muted);margin:0 0 22px;font-size:14px}
+.login .row{display:flex;gap:10px}
+.error{color:var(--red);font-size:13px;min-height:18px;margin-top:10px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-right:auto}
+.tab{border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 16px;font-size:14px;cursor:pointer}
+.tab[aria-selected=true]{background:#e6f7ff;border-color:#8dd9f7;color:#087aa7;font-weight:bold}
+.tab span{display:inline-block;min-width:22px;margin-left:6px;padding:1px 7px;border-radius:20px;background:var(--pale);font-size:12px}
+.search{max-width:260px}
+.meta{color:var(--muted);font-size:13px;margin:0 0 14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.card-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.card-head strong{font-size:17px}.card-head time{color:var(--muted);font-size:13px}
+dl{display:grid;grid-template-columns:180px 1fr;gap:6px 16px;margin:0;font-size:14px}
+dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.empty{text-align:center;color:var(--muted);padding:50px 0}
+@media(max-width:640px){dl{grid-template-columns:1fr;gap:2px}dd{margin-bottom:8px}.search{max-width:none;flex:1 1 100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><b>(</b> Carepak <b>)</b><small>Admin</small></div>
+  <button class="btn ghost" id="logout" hidden>Log out</button>
+</header>
+
+<section id="loginView" class="login">
+  <h1>Admin</h1>
+  <p>Enter the admin password to view form submissions.</p>
+  <form id="loginForm">
+    <label for="pw" style="position:absolute;left:-9999px">Password</label>
+    <div class="row"><input id="pw" type="password" autocomplete="current-password" placeholder="Password" required><button class="btn" id="loginBtn">Enter</button></div>
+    <div class="error" id="loginError" role="alert"></div>
+  </form>
+</section>
+
+<main id="adminView" class="wrap" hidden>
+  <div class="bar">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="letstalk" aria-selected="true">Let's Talk<span id="count-letstalk">0</span></button>
+      <button class="tab" role="tab" data-tab="onboarding" aria-selected="false">Onboarding<span id="count-onboarding">0</span></button>
+    </div>
+    <input class="search" id="search" type="search" placeholder="Search…">
+    <button class="btn ghost" id="refresh">Refresh</button>
+    <button class="btn ghost" id="csv">Download CSV</button>
+  </div>
+  <p class="meta" id="meta"></p>
+  <div id="list"></div>
+</main>
+
+<script src="../assets/config.js"></script>
+<script>
+'use strict';
+const ENDPOINT = window.CAREPAK_ENDPOINT || '';
+const $ = id => document.getElementById(id);
+let data = null, tab = 'letstalk', password = '';
+try { password = sessionStorage.getItem('cpAdmin') || ''; } catch (e) {}
+
+async function load() {
+  if (!ENDPOINT) throw new Error('The forms backend isn’t connected yet (assets/config.js).');
+  const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'list', password }) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'Could not load submissions.');
+  data = j;
+  $('meta').textContent = 'Updated ' + new Date().toLocaleString();
+}
+
+function showAdmin() {
+  $('loginView').hidden = true; $('adminView').hidden = false; $('logout').hidden = false;
+  render();
+}
+
+function render() {
+  for (const t of ['letstalk', 'onboarding']) $('count-' + t).textContent = data[t].rows.length;
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
+  const { headers, rows } = data[tab];
+  const q = $('search').value.trim().toLowerCase();
+  const shown = q ? rows.filter(r => r.join(' ').toLowerCase().includes(q)) : rows;
+  const list = $('list'); list.replaceChildren();
+  if (!shown.length) {
+    const p = document.createElement('p'); p.className = 'empty';
+    p.textContent = rows.length ? 'No submissions match your search.' : 'No submissions yet.';
+    list.append(p); return;
+  }
+  const nameIdx = headers.indexOf('Name');
+  for (const row of shown) {
+    // Submissions come from the public, so everything is inserted as plain text.
+    const card = document.createElement('article'); card.className = 'card';
+    const head = document.createElement('div'); head.className = 'card-head';
+    const name = document.createElement('strong'); name.textContent = row[nameIdx] || '(no name)';
+    const time = document.createElement('time'); time.textContent = row[0];
+    head.append(name, time);
+    const dl = document.createElement('dl');
+    headers.forEach((h, i) => {
+      if (i === 0 || i === nameIdx) return;
+      const dt = document.createElement('dt'); dt.textContent = h;
+      const dd = document.createElement('dd'); dd.textContent = row[i] || '—';
+      if (h === 'Email' && row[i]) { dd.textContent = ''; const a = document.createElement('a'); a.href = 'mailto:' + row[i]; a.textContent = row[i]; dd.append(a); }
+      if (h === 'Phone' && row[i]) { dd.textContent = ''; const a = document.createElement('a'); a.href = 'tel:' + row[i].replace(/[^\d+]/g, ''); a.textContent = row[i]; dd.append(a); }
+      dl.append(dt, dd);
+    });
+    card.append(head, dl); list.append(card);
+  }
+}
+
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  password = $('pw').value;
+  $('loginBtn').disabled = true; $('loginError').textContent = '';
+  try {
+    await load();
+    try { sessionStorage.setItem('cpAdmin', password); } catch (e) {}
+    showAdmin();
+  } catch (err) { $('loginError').textContent = err.message; }
+  finally { $('loginBtn').disabled = false; }
+};
+
+$('refresh').onclick = async () => {
+  $('refresh').disabled = true;
+  try { await load(); render(); } catch (err) { $('meta').textContent = err.message; }
+  finally { $('refresh').disabled = false; }
+};
+
+$('logout').onclick = () => {
+  try { sessionStorage.removeItem('cpAdmin'); } catch (e) {}
+  password = ''; data = null; $('pw').value = ''; $('list').replaceChildren();
+  $('adminView').hidden = true; $('logout').hidden = true; $('loginView').hidden = false;
+};
+
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => { tab = b.dataset.tab; render(); });
+$('search').oninput = render;
+
+$('csv').onclick = () => {
+  const { headers, rows } = data[tab];
+  // Prefix cells starting with = + - @ so spreadsheet apps don't run them as formulas.
+  const cell = v => { v = String(v ?? ''); if (/^[=+\-@]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
+  const csv = [headers, ...rows].map(r => r.map(cell).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' }));
+  a.download = 'carepak-' + tab + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
+if (password) load().then(showAdmin).catch(() => { password = ''; try { sessionStorage.removeItem('cpAdmin'); } catch (e) {} });
+</script>
+</body>
+</html>

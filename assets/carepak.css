@@ -52,3 +52,5 @@ summary{font-weight:700;cursor:pointer}
 .cp-foot{background:var(--ink);color:#cfdcdc;padding:28px 0;font-size:.9rem}
 .cp-foot a{color:#fff}
 @media (max-width:760px){.cp-grid{grid-template-columns:1fr;gap:28px}.cp-hero{padding:44px 0 32px}.cp-sec{padding:40px 0}}
+.cp-status{color:#ad3e35;font-size:.95rem;min-height:1.2em;margin:0}
+.cp-done{background:#e9f7ef;border-left:4px solid var(--brand);padding:14px 16px;border-radius:6px}

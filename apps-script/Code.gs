@@ -1,71 +1,64 @@
 /**
- * Carepak "Let's Talk" form receiver (Google Apps Script web app).
- * Each submission is saved to the "Submissions" tab of the Google Sheet this
- * script is attached to, and emailed to the Carepak team. If the visitor ticked
- * "Send a copy to my email", they get a copy too.
+ * Carepak forms backend (Google Apps Script web app).
+ *  - Let's Talk submissions  → "Let's Talk" tab + email to the team (+ optional copy to sender)
+ *  - Onboarding submissions  → "Onboarding" tab + email to the team
+ *  - Admin page (/admin)     → lists both tabs, only with the admin password
+ *
+ * The admin password is NOT stored in this file (the repository is public).
+ * Set it in Apps Script: Project Settings → Script properties → ADMIN_PASSWORD.
  * Setup steps: apps-script/README.md
  */
 const RECIPIENTS = 'mhinojosa@carepakpharmacy.com,jshon@carepakpharmacy.com';
 const PHONE = '1.800.601.7092';
-const SHEET_NAME = 'Submissions';
-const HEADERS = ['Received', 'Organization', 'Name', 'Title', 'Email', 'Biggest concern', 'Services of interest', 'Questions', 'Copy requested'];
+
+const FORMS = {
+  letstalk: {
+    sheet: "Let's Talk",
+    headers: ['Received', 'Organization', 'Name', 'Title', 'Email', 'Biggest concern', 'Services of interest', 'Questions', 'Copy requested'],
+    fields: ['organization', 'name', 'title', 'email', 'concern', 'services', 'questions', 'emailCopy'],
+    required: d => d.name && isEmail(d.email)
+  },
+  onboarding: {
+    sheet: 'Onboarding',
+    headers: ['Received', 'Name', 'Phone', 'Email', 'Best time to call', 'Current pharmacy', 'Consent to contact'],
+    fields: ['name', 'phone', 'email', 'bestTime', 'currentPharmacy', 'consent'],
+    required: d => d.name && d.phone && (!d.email || isEmail(d.email))
+  }
+};
 
 function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (d.action === 'list') return json(listSubmissions(d.password));
     if (d.website) return json({ ok: true }); // spam trap: real visitors never fill this hidden field
 
-    const txt = (v, max) => String(v == null ? '' : v).trim().slice(0, max || 3000);
-    const r = {
-      org: txt(d.organization, 80),
-      name: txt(d.name, 120),
-      title: txt(d.title, 120),
-      email: txt(d.email, 200),
-      concern: txt(d.concern),
-      services: (Array.isArray(d.services) ? d.services : []).slice(0, 20).map(s => txt(s, 120)).join(', '),
-      questions: txt(d.questions),
-      copy: d.emailCopy === true
-    };
-    if (!r.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) return json({ ok: false, error: 'Missing name or valid email' });
+    const type = d.type === 'onboarding' ? 'onboarding' : 'letstalk';
+    const form = FORMS[type];
+    const r = clean(d);
+    if (!form.required(r)) return json({ ok: false, error: 'Missing required fields' });
 
-    // Save to the sheet (values starting with = + - @ are prefixed so they aren't run as formulas)
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sh = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
-    if (sh.getLastRow() === 0) { sh.appendRow(HEADERS); sh.setFrozenRows(1); }
-    const safe = v => (typeof v === 'string' && /^[=+\-@]/.test(v)) ? "'" + v : v;
-    sh.appendRow([new Date(), r.org, r.name, r.title, r.email, r.concern, r.services, r.questions, r.copy ? 'Yes' : 'No'].map(safe));
+    const values = form.fields.map(f => typeof r[f] === 'boolean' ? (r[f] ? 'Yes' : 'No') : r[f]);
+    const sh = sheetFor(form);
+    sh.appendRow([new Date()].concat(values).map(safe));
 
-    const body = [
-      'Organization: ' + r.org,
-      'Name: ' + r.name,
-      'Title: ' + r.title,
-      'Email: ' + r.email,
-      '',
-      'Biggest concern when coordinating patients’ medications:',
-      r.concern || '(none)',
-      '',
-      'Services that would be most helpful:',
-      r.services || '(none selected)',
-      '',
-      'Questions / services they would like to see:',
-      r.questions || '(none)'
-    ].join('\n');
-
+    const lines = form.headers.slice(1).map((h, i) => h + ': ' + (values[i] || '—'));
+    const label = type === 'onboarding' ? 'New onboarding request' : 'Let’s Talk submission';
     MailApp.sendEmail({
       to: RECIPIENTS,
-      replyTo: r.email,
+      replyTo: r.email || RECIPIENTS.split(',')[0],
       name: 'Carepak Website',
-      subject: 'Let’s Talk submission: ' + r.name + (r.org ? ' (' + r.org + ')' : ''),
-      body: body + '\n\nCopy requested by sender: ' + (r.copy ? 'Yes' : 'No') + '\nReply to this email to respond to ' + r.name + '.'
+      subject: label + ': ' + r.name + (r.organization ? ' (' + r.organization + ')' : ''),
+      body: lines.join('\n') + '\n\nAll submissions: https://start.carepakpharmacy.com/admin/'
     });
 
-    if (r.copy) {
+    if (type === 'letstalk' && r.emailCopy) {
       MailApp.sendEmail({
         to: r.email,
         replyTo: RECIPIENTS.split(',')[0],
         name: 'Carepak Pharmacy',
         subject: 'Your responses to Carepak Pharmacy',
-        body: 'Thank you for getting in touch. Here is a copy of what you sent us.\n\n' + body +
+        body: 'Thank you for getting in touch. We will get in touch with you shortly!\n\nHere is a copy of what you sent us.\n\n' +
+              lines.filter(l => !/^Copy requested/.test(l)).join('\n') +
               '\n\nQuestions? Call us at ' + PHONE + ' or reply to this email.\n\nCarepak Pharmacy'
       });
     }
@@ -76,14 +69,65 @@ function doPost(e) {
   }
 }
 
-function doGet() {
-  return json({ ok: true, service: 'carepak-letstalk' });
+function listSubmissions(password) {
+  const cache = CacheService.getScriptCache();
+  const fails = Number(cache.get('adminFails') || 0);
+  if (fails >= 10) return { ok: false, error: 'Too many attempts. Try again in 15 minutes.' };
+  const real = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD');
+  if (!real) return { ok: false, error: 'Admin password not set up yet (Script properties → ADMIN_PASSWORD).' };
+  if (String(password || '') !== real) {
+    cache.put('adminFails', String(fails + 1), 900);
+    return { ok: false, error: 'Wrong password.' };
+  }
+  const out = { ok: true };
+  Object.keys(FORMS).forEach(type => {
+    const form = FORMS[type];
+    const sh = sheetFor(form);
+    const n = sh.getLastRow();
+    const rows = n > 1 ? sh.getRange(2, 1, n - 1, form.headers.length).getDisplayValues() : [];
+    out[type] = { headers: form.headers, rows: rows.reverse() }; // newest first
+  });
+  return out;
 }
 
-/** Run this once from the editor to grant permissions (Sheets + email). */
+function clean(d) {
+  const txt = (v, max) => String(v == null ? '' : v).trim().slice(0, max || 3000);
+  return {
+    type: d.type,
+    organization: txt(d.organization, 80),
+    name: txt(d.name, 120),
+    title: txt(d.title, 120),
+    email: txt(d.email, 200),
+    phone: txt(d.phone, 40),
+    bestTime: txt(d.bestTime, 40),
+    currentPharmacy: txt(d.currentPharmacy, 200),
+    consent: d.consent === true,
+    concern: txt(d.concern),
+    services: (Array.isArray(d.services) ? d.services : []).slice(0, 20).map(s => txt(s, 120)).join(', '),
+    questions: txt(d.questions),
+    emailCopy: d.emailCopy === true
+  };
+}
+
+function sheetFor(form) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(form.sheet);
+  if (!sh) sh = ss.insertSheet(form.sheet);
+  if (sh.getLastRow() === 0) { sh.appendRow(form.headers); sh.setFrozenRows(1); }
+  return sh;
+}
+
+// Values starting with = + - @ are prefixed so the sheet never runs them as formulas.
+function safe(v) { return (typeof v === 'string' && /^[=+\-@]/.test(v)) ? "'" + v : v; }
+function isEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s || '')); }
+
+function doGet() { return json({ ok: true, service: 'carepak-forms' }); }
+
+/** Run once from the editor to grant permissions (Sheets + email). */
 function authorize() {
   SpreadsheetApp.getActiveSpreadsheet().getName();
   Logger.log('Emails left today: ' + MailApp.getRemainingDailyQuota());
+  Logger.log('Admin password set: ' + !!PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD'));
 }
 
 function json(o) {
