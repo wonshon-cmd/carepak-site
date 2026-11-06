@@ -34,7 +34,7 @@ $('profileForm').onsubmit=e=>{e.preventDefault();for(const key of ['name','title
 ['name','title','email'].forEach(key=>$(key).oninput=()=>$(key).setCustomValidity(''));
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));
 $('exit').onclick=()=>{authorized=false;selected.clear();Object.keys(profile).forEach(k=>delete profile[k]);document.querySelectorAll('form').forEach(f=>f.reset());$('codeError').textContent='';$('code').removeAttribute('aria-invalid');show('entry')};
-$('serviceGrid').innerHTML=services.map((s,i)=>`<article class="service"><span class="num">0${i+1}</span><div><h2 class="service-title">${s.id==='pa'?'STAT <strong>prior authorization assistance</strong>':s.name}</h2><small>${s.short}</small>${s.beta?`<p style="font-size:12px;color:#1682aa;margin:14px 0 5px">${s.beta}</p>`:''}</div></article>`).join('');
+$('serviceGrid').innerHTML=services.map((s,i)=>`<article class="service"><span class="num">0${i+1}</span><div><h2 class="service-title">${s.name}</h2><small>${s.short}</small>${s.beta?`<p style="font-size:12px;color:#1682aa;margin:14px 0 5px">${s.beta}</p>`:''}</div></article>`).join('');
 function renderChoices(){$('choices').innerHTML=[...services,...future].map(s=>`<label class="choice"><input type="checkbox" value="${s.id}" ${selected.has(s.id)?'checked':''}>${s.name}</label>`).join('');$('choices').onchange=e=>{if(e.target.checked)selected.add(e.target.value);else selected.delete(e.target.value)}}
 $('feedbackForm').onsubmit=async e=>{e.preventDefault();const copy=$('emailCopy').checked;
 if(!CONFIG.endpoint){$('sendError').textContent='Sorry, we couldn’t send your responses. Please call us at '+CONFIG.phone+'.';return}
