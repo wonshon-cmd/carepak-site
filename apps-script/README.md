@@ -1,10 +1,10 @@
-# Forms backend: Let's Talk + Onboarding → email, Google Sheet, /admin
+# Forms backend: Let's Connect + Onboarding → email, Google Sheet, /admin
 
 A small Google Apps Script that:
-- saves Let's Talk and Onboarding submissions to two tabs of a Google Sheet
+- saves Let's Connect and Onboarding submissions to two tabs of a Google Sheet
 - emails jshon@carepakpharmacy.com for each one (Reply goes to the sender); recipients are the `notify` lines in Code.gs
 - lets the admin page delete a submission (removes the row from the sheet)
-- emails the Let's Talk sender a copy if they ticked "Send a copy to my email"
+- emails the Let's Connect sender a copy if they ticked "Send a copy to my email"
 - feeds start.carepakpharmacy.com/admin, but only with the admin password
 
 Emails are sent from the Google account that deploys the script. Use a Carepak account if you have one.

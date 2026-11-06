@@ -61,7 +61,7 @@ dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 <main id="adminView" class="wrap" hidden>
   <div class="bar">
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" data-tab="letstalk" aria-selected="true">Let's Talk<span id="count-letstalk">0</span></button>
+      <button class="tab" role="tab" data-tab="letstalk" aria-selected="true">Let's Connect<span id="count-letstalk">0</span></button>
       <button class="tab" role="tab" data-tab="onboarding" aria-selected="false">Onboarding<span id="count-onboarding">0</span></button>
       <button class="tab" role="tab" data-tab="visits" aria-selected="false">Visits<span id="count-visits">0</span></button>
     </div>
@@ -73,7 +73,7 @@ dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
   <div id="list"></div>
 </main>
 
-<script src="../assets/config.js?v=4"></script>
+<script src="../assets/config.js?v=5"></script>
 <script>
 'use strict';
 const ENDPOINT = window.CAREPAK_ENDPOINT || '';
@@ -96,8 +96,13 @@ function showAdmin() {
 }
 
 function renderVisits() {
-  const v = data.visits || { headers: [], rows: [], total: 0 };
   const list = $('list'); list.replaceChildren();
+  if (!data.visits) {
+    const p = document.createElement('p'); p.className = 'empty';
+    p.textContent = 'Visits aren’t available yet: the Google script is still the old version. In Apps Script: paste the new Code.gs, then Deploy → Manage deployments → ✏️ → Version: New version → Deploy.';
+    list.append(p); return;
+  }
+  const v = data.visits;
   const now = new Date(), day = 864e5;
   const views = v.rows.filter(r => r[2] === 'Page view');
   const sameDay = d => d.toDateString() === now.toDateString();
@@ -132,7 +137,8 @@ function renderVisits() {
 
 function render() {
   for (const t of ['letstalk', 'onboarding']) $('count-' + t).textContent = data[t].rows.length;
-  $('count-visits').textContent = data.visits ? data.visits.total : 0;
+  $('count-visits').textContent = data.visits ? data.visits.total : '!';
+  $('meta').dataset.old = data.visits ? '' : '1';
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
   if (tab === 'visits') return renderVisits();
   const { headers, rows } = data[tab];

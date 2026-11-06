@@ -5,7 +5,8 @@ Live at **https://start.carepakpharmacy.com** (hosted on GitHub Pages; the main 
 | URL | File |
 |---|---|
 | start.carepakpharmacy.com/onboarding | `onboarding/index.html` |
-| start.carepakpharmacy.com/letstalk | `letstalk/index.html` |
+| start.carepakpharmacy.com/letsconnect | `letsconnect/index.html` |
+| start.carepakpharmacy.com/letstalk | forwards to /letsconnect (link already shared with partners) |
 
 Shared styles and scripts are in `assets/`. `CNAME` holds the custom domain.
 Pages are hidden from search engines (`robots.txt` + noindex) until the `[PLACEHOLDER]` details are filled in.

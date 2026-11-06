@@ -1,6 +1,6 @@
 /**
  * Carepak forms backend (Google Apps Script web app).
- *  - Let's Talk submissions  → "Let's Talk" tab + email to jshon@ (+ optional copy to sender)
+ *  - Let's Connect submissions → "Let's Talk" tab (tab name kept so existing rows stay) + email to jshon@ (+ optional copy to sender)
  *  - Onboarding submissions  → "Onboarding" tab + email to jshon@ only
  *  - Admin page (/admin)     → lists both tabs, only with the admin password
  *
@@ -54,7 +54,7 @@ function doPost(e) {
     sh.appendRow([new Date()].concat(values).map(safe));
 
     const lines = form.headers.slice(1).map((h, i) => h + ': ' + (values[i] || '—'));
-    const label = type === 'onboarding' ? 'New onboarding request' : 'Let’s Talk submission';
+    const label = type === 'onboarding' ? 'New onboarding request' : 'Let’s Connect submission';
     MailApp.sendEmail({
       to: form.notify,
       replyTo: r.email || form.notify.split(',')[0],
