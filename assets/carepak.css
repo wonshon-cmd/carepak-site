@@ -1,0 +1,54 @@
+/* Carepak Pharmacy draft pages. Swap --brand / --accent for the colors on your Wix site. */
+:root{--brand:#0b6e6e;--brand-d:#085454;--accent:#f2a33a;--ink:#1d2a2f;--muted:#5b6b70;--bg:#fff;--soft:#f2f7f7;--line:#dbe5e5;--r:12px}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+a{color:var(--brand)}
+h1,h2{line-height:1.2;margin:0 0 .6em}
+h1{font-size:clamp(1.8rem,4.5vw,2.8rem)}
+h2{font-size:1.5rem}
+.cp-in{max-width:1080px;margin:0 auto;padding:0 16px}
+.cp-in.narrow{max-width:680px}
+.cp-top{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
+.cp-top .cp-in{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;flex-wrap:wrap}
+.cp-top nav{display:flex;align-items:center;gap:16px}
+.cp-top nav a:not(.cp-btn){text-decoration:none;font-weight:600}
+.cp-logo{font-weight:800;font-size:1.25rem;text-decoration:none;color:var(--ink)}
+.cp-logo span{color:var(--brand)}
+.cp-btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:999px;padding:.8em 1.5em;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.cp-btn:hover{background:var(--brand-d)}
+.cp-btn.sm{padding:.45em 1em;font-size:.9rem}
+.cp-btn.ghost{background:transparent;color:var(--brand);box-shadow:inset 0 0 0 2px var(--brand)}
+.cp-hero{background:linear-gradient(160deg,var(--soft),#fff);padding:64px 0 48px}
+.cp-eyebrow{color:var(--brand);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;margin:0 0 .5em}
+.cp-lead{font-size:1.15rem;color:var(--muted);max-width:640px}
+.cp-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.cp-sec{padding:56px 0}
+.cp-sec.alt{background:var(--soft)}
+.cp-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.cp-steps{list-style:none;padding:0;margin:0;counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.cp-steps li{counter-increment:s;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.cp-steps li::before{content:counter(s);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;margin-bottom:10px}
+.cp-steps strong{display:block;margin-bottom:4px}
+.cp-steps span{color:var(--muted)}
+.cp-check{list-style:none;padding:0;margin:0}
+.cp-check li{padding:8px 0 8px 30px;position:relative;border-bottom:1px solid var(--line)}
+.cp-check li::before{content:"✓";position:absolute;left:4px;color:var(--brand);font-weight:800}
+.cp-note{background:#fff7e8;border-left:4px solid var(--accent);padding:10px 14px;border-radius:6px;font-size:.95rem}
+.cp-form{display:grid;gap:14px;margin-top:16px}
+.cp-form label{display:grid;gap:4px;font-weight:600;font-size:.95rem}
+.cp-form label.cp-row{display:flex;align-items:center;gap:8px;font-weight:400}
+.cp-form input:not([type=checkbox]),.cp-form select,.cp-form textarea{font:inherit;padding:.65em .8em;border:1px solid var(--line);border-radius:8px;background:#fff;width:100%}
+.cp-form button{justify-self:start}
+details{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;margin-bottom:10px}
+summary{font-weight:700;cursor:pointer}
+.cp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.cp-card{display:grid;gap:4px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;text-decoration:none;color:var(--ink)}
+.cp-card:hover{border-color:var(--brand)}
+.cp-card span:last-child{color:var(--muted)}
+.cp-ic{font-size:1.6rem}
+.cp-hours{border-collapse:collapse;width:100%;margin-bottom:12px}
+.cp-hours td{padding:8px 0;border-bottom:1px solid var(--line)}
+.cp-hours td:last-child{text-align:right;font-weight:600}
+.cp-foot{background:var(--ink);color:#cfdcdc;padding:28px 0;font-size:.9rem}
+.cp-foot a{color:#fff}
+@media (max-width:760px){.cp-grid{grid-template-columns:1fr;gap:28px}.cp-hero{padding:44px 0 32px}.cp-sec{padding:40px 0}}
