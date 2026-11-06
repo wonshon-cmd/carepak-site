@@ -29,6 +29,7 @@ document.querySelectorAll(".cp-form").forEach(function (f) {
       var r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
       var j = await r.json();
       if (!j.ok) throw new Error(j.error || "failed");
+      if (window.carepakTrack) window.carepakTrack("Submitted onboarding request");
       f.innerHTML = '<p class="cp-done"><strong>Thank you!</strong> We received your request and will get in touch with you shortly.</p>';
     } catch (err) {
       status.textContent = "Sorry, we couldn't send your request. Please try again or call us.";

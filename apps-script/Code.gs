@@ -28,11 +28,20 @@ const FORMS = {
   }
 };
 
+// Anonymous visit log. No IP address, cookies or personal details are stored.
+// "City" is an approximate lookup done in the visitor's browser; it can be off or blank.
+const VISITS = {
+  sheet: 'Visits',
+  headers: ['When', 'Page', 'Event', 'City (approx.)', 'Time zone', 'Device', 'Browser', 'Came from', 'Language'],
+  keep: 500 // most recent visits shown in /admin
+};
+
 function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     if (d.action === 'list') return json(listSubmissions(d.password));
     if (d.action === 'delete') return json(deleteSubmission(d));
+    if (d.action === 'visit') { logVisit(d); return json({ ok: true }); }
     if (d.website) return json({ ok: true }); // spam trap: real visitors never fill this hidden field
 
     const type = d.type === 'onboarding' ? 'onboarding' : 'letstalk';
@@ -98,7 +107,23 @@ function listSubmissions(password) {
     const ids = rows.map((_, i) => i + 2); // sheet row numbers, used for delete
     out[type] = { headers: form.headers, rows: rows.reverse(), ids: ids.reverse() }; // newest first
   });
+  const vs = sheetFor(VISITS);
+  const vn = vs.getLastRow() - 1;
+  const take = Math.min(vn, VISITS.keep);
+  const vrows = take > 0 ? vs.getRange(vs.getLastRow() - take + 1, 1, take, VISITS.headers.length).getValues() : [];
+  out.visits = {
+    headers: VISITS.headers,
+    total: Math.max(vn, 0),
+    rows: vrows.map(r => r.map(v => v instanceof Date ? v.toISOString() : String(v))).reverse()
+  };
   return out;
+}
+
+function logVisit(d) {
+  const t = (v, max) => String(v == null ? '' : v).trim().slice(0, max);
+  const row = [new Date(), t(d.page, 80) || '/', t(d.event, 60) || 'Page view', t(d.city, 80), t(d.tz, 60),
+               t(d.device, 20), t(d.browser, 40), t(d.ref, 100) || 'Direct', t(d.lang, 20)];
+  sheetFor(VISITS).appendRow(row.map(safe));
 }
 
 // Deletes one submission. `match` must equal the row's current contents, so a
