@@ -1,6 +1,6 @@
 /**
  * Carepak forms backend (Google Apps Script web app).
- *  - Let's Talk submissions  → "Let's Talk" tab + email to jshon@ and mhinojosa@ (+ optional copy to sender)
+ *  - Let's Talk submissions  → "Let's Talk" tab + email to jshon@ (+ optional copy to sender)
  *  - Onboarding submissions  → "Onboarding" tab + email to jshon@ only
  *  - Admin page (/admin)     → lists both tabs, only with the admin password
  *
@@ -13,7 +13,7 @@ const PHONE = '1.800.601.7092';
 // Who gets the notification email for each form. Edit these to change recipients.
 const FORMS = {
   letstalk: {
-    notify: 'jshon@carepakpharmacy.com,mhinojosa@carepakpharmacy.com',
+    notify: 'jshon@carepakpharmacy.com', // mhinojosa@carepakpharmacy.com removed for now
     sheet: "Let's Talk",
     headers: ['Received', 'Organization', 'Name', 'Title', 'Email', 'Biggest concern', 'Services of interest', 'Questions', 'Copy requested'],
     fields: ['organization', 'name', 'title', 'email', 'concern', 'services', 'questions', 'emailCopy'],
@@ -32,6 +32,7 @@ function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     if (d.action === 'list') return json(listSubmissions(d.password));
+    if (d.action === 'delete') return json(deleteSubmission(d));
     if (d.website) return json({ ok: true }); // spam trap: real visitors never fill this hidden field
 
     const type = d.type === 'onboarding' ? 'onboarding' : 'letstalk';
@@ -59,7 +60,7 @@ function doPost(e) {
         replyTo: form.notify,
         name: 'Carepak Pharmacy',
         subject: 'Your responses to Carepak Pharmacy',
-        body: 'Thank you for getting in touch. We will get in touch with you shortly!\n\nHere is a copy of what you sent us.\n\n' +
+        body: 'Thank you for getting in touch. A Carepak representative will get in touch with you shortly.\n\nHere is a copy of what you sent us.\n\n' +
               lines.filter(l => !/^Copy requested/.test(l)).join('\n') +
               '\n\nQuestions? Call us at ' + PHONE + ' or reply to this email.\n\nCarepak Pharmacy'
       });
@@ -71,25 +72,55 @@ function doPost(e) {
   }
 }
 
-function listSubmissions(password) {
+// Returns an error message, or '' when the admin password is correct.
+function passwordError(password) {
   const cache = CacheService.getScriptCache();
   const fails = Number(cache.get('adminFails') || 0);
-  if (fails >= 10) return { ok: false, error: 'Too many attempts. Try again in 15 minutes.' };
+  if (fails >= 10) return 'Too many attempts. Try again in 15 minutes.';
   const real = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD');
-  if (!real) return { ok: false, error: 'Admin password not set up yet (Script properties → ADMIN_PASSWORD).' };
+  if (!real) return 'Admin password not set up yet (Script properties → ADMIN_PASSWORD).';
   if (String(password || '') !== real) {
     cache.put('adminFails', String(fails + 1), 900);
-    return { ok: false, error: 'Wrong password.' };
+    return 'Wrong password.';
   }
+  return '';
+}
+
+function listSubmissions(password) {
+  const err = passwordError(password);
+  if (err) return { ok: false, error: err };
   const out = { ok: true };
   Object.keys(FORMS).forEach(type => {
     const form = FORMS[type];
     const sh = sheetFor(form);
     const n = sh.getLastRow();
     const rows = n > 1 ? sh.getRange(2, 1, n - 1, form.headers.length).getDisplayValues() : [];
-    out[type] = { headers: form.headers, rows: rows.reverse() }; // newest first
+    const ids = rows.map((_, i) => i + 2); // sheet row numbers, used for delete
+    out[type] = { headers: form.headers, rows: rows.reverse(), ids: ids.reverse() }; // newest first
   });
   return out;
+}
+
+// Deletes one submission. `match` must equal the row's current contents, so a
+// stale admin page can never delete the wrong row if the sheet changed meanwhile.
+function deleteSubmission(d) {
+  const err = passwordError(d.password);
+  if (err) return { ok: false, error: err };
+  const form = FORMS[d.type];
+  const row = Number(d.id);
+  if (!form || !(row >= 2)) return { ok: false, error: 'Unknown submission.' };
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sh = sheetFor(form);
+    if (row > sh.getLastRow()) return { ok: false, error: 'This submission was already removed. Click Refresh.' };
+    const current = sh.getRange(row, 1, 1, form.headers.length).getDisplayValues()[0];
+    if (JSON.stringify(current) !== JSON.stringify(d.match)) return { ok: false, error: 'The list changed since you loaded it. Click Refresh and try again.' };
+    sh.deleteRow(row);
+  } finally {
+    lock.releaseLock();
+  }
+  return listSubmissions(d.password);
 }
 
 function clean(d) {

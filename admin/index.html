@@ -35,6 +35,7 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-o
 .card-head strong{font-size:17px}.card-head time{color:var(--muted);font-size:13px}
 dl{display:grid;grid-template-columns:180px 1fr;gap:6px 16px;margin:0;font-size:14px}
 dt{color:var(--muted)}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.card-foot{display:flex;justify-content:flex-end;margin-top:12px}.del{border:1px solid #f0c9c5;background:#fff;color:var(--red);border-radius:7px;padding:8px 14px;font-size:13px;cursor:pointer}.del:hover{background:#fdf1f0}.del:disabled{opacity:.6;cursor:wait}
 .empty{text-align:center;color:var(--muted);padding:50px 0}
 @media(max-width:640px){dl{grid-template-columns:1fr;gap:2px}dd{margin-bottom:8px}.search{max-width:none;flex:1 1 100%}}
 </style>
@@ -95,8 +96,10 @@ function render() {
   for (const t of ['letstalk', 'onboarding']) $('count-' + t).textContent = data[t].rows.length;
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
   const { headers, rows } = data[tab];
+  const ids = data[tab].ids || [];
+  const items = rows.map((row, i) => ({ row, id: ids[i] }));
   const q = $('search').value.trim().toLowerCase();
-  const shown = q ? rows.filter(r => r.join(' ').toLowerCase().includes(q)) : rows;
+  const shown = q ? items.filter(it => it.row.join(' ').toLowerCase().includes(q)) : items;
   const list = $('list'); list.replaceChildren();
   if (!shown.length) {
     const p = document.createElement('p'); p.className = 'empty';
@@ -104,7 +107,7 @@ function render() {
     list.append(p); return;
   }
   const nameIdx = headers.indexOf('Name');
-  for (const row of shown) {
+  for (const { row, id } of shown) {
     // Submissions come from the public, so everything is inserted as plain text.
     const card = document.createElement('article'); card.className = 'card';
     const head = document.createElement('div'); head.className = 'card-head';
@@ -120,7 +123,28 @@ function render() {
       if (h === 'Phone' && row[i]) { dd.textContent = ''; const a = document.createElement('a'); a.href = 'tel:' + row[i].replace(/[^\d+]/g, ''); a.textContent = row[i]; dd.append(a); }
       dl.append(dt, dd);
     });
-    card.append(head, dl); list.append(card);
+    card.append(head, dl);
+    if (id) {
+      const foot = document.createElement('div'); foot.className = 'card-foot';
+      const del = document.createElement('button'); del.className = 'del'; del.type = 'button'; del.textContent = 'Delete';
+      del.onclick = () => removeSubmission(id, row, del);
+      foot.append(del); card.append(foot);
+    }
+    list.append(card);
+  }
+}
+
+async function removeSubmission(id, row, btn) {
+  const who = row[data[tab].headers.indexOf('Name')] || 'this person';
+  if (!confirm('Delete the submission from ' + who + ' (' + row[0] + ')?\n\nIt will be removed from this page and the Google Sheet. This can’t be undone.')) return;
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'delete', password, type: tab, id, match: row }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Could not delete.');
+    data = j; $('meta').textContent = 'Deleted. Updated ' + new Date().toLocaleString(); render();
+  } catch (err) {
+    alert(err.message); btn.disabled = false; btn.textContent = 'Delete';
   }
 }
 

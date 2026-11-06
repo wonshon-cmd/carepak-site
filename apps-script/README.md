@@ -2,7 +2,8 @@
 
 A small Google Apps Script that:
 - saves Let's Talk and Onboarding submissions to two tabs of a Google Sheet
-- emails mhinojosa@carepakpharmacy.com and jshon@carepakpharmacy.com for each one (Reply goes to the sender)
+- emails jshon@carepakpharmacy.com for each one (Reply goes to the sender); recipients are the `notify` lines in Code.gs
+- lets the admin page delete a submission (removes the row from the sheet)
 - emails the Let's Talk sender a copy if they ticked "Send a copy to my email"
 - feeds start.carepakpharmacy.com/admin, but only with the admin password
 
