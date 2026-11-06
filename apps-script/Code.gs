@@ -1,24 +1,26 @@
 /**
  * Carepak forms backend (Google Apps Script web app).
- *  - Let's Talk submissions  → "Let's Talk" tab + email to the team (+ optional copy to sender)
- *  - Onboarding submissions  → "Onboarding" tab + email to the team
+ *  - Let's Talk submissions  → "Let's Talk" tab + email to jshon@ and mhinojosa@ (+ optional copy to sender)
+ *  - Onboarding submissions  → "Onboarding" tab + email to jshon@ only
  *  - Admin page (/admin)     → lists both tabs, only with the admin password
  *
  * The admin password is NOT stored in this file (the repository is public).
  * Set it in Apps Script: Project Settings → Script properties → ADMIN_PASSWORD.
  * Setup steps: apps-script/README.md
  */
-const RECIPIENTS = 'mhinojosa@carepakpharmacy.com,jshon@carepakpharmacy.com';
 const PHONE = '1.800.601.7092';
 
+// Who gets the notification email for each form. Edit these to change recipients.
 const FORMS = {
   letstalk: {
+    notify: 'jshon@carepakpharmacy.com,mhinojosa@carepakpharmacy.com',
     sheet: "Let's Talk",
     headers: ['Received', 'Organization', 'Name', 'Title', 'Email', 'Biggest concern', 'Services of interest', 'Questions', 'Copy requested'],
     fields: ['organization', 'name', 'title', 'email', 'concern', 'services', 'questions', 'emailCopy'],
     required: d => d.name && isEmail(d.email)
   },
   onboarding: {
+    notify: 'jshon@carepakpharmacy.com', // onboarding goes to jshon only
     sheet: 'Onboarding',
     headers: ['Received', 'Name', 'Phone', 'Email', 'Best time to call', 'Current pharmacy', 'Consent to contact'],
     fields: ['name', 'phone', 'email', 'bestTime', 'currentPharmacy', 'consent'],
@@ -44,8 +46,8 @@ function doPost(e) {
     const lines = form.headers.slice(1).map((h, i) => h + ': ' + (values[i] || '—'));
     const label = type === 'onboarding' ? 'New onboarding request' : 'Let’s Talk submission';
     MailApp.sendEmail({
-      to: RECIPIENTS,
-      replyTo: r.email || RECIPIENTS.split(',')[0],
+      to: form.notify,
+      replyTo: r.email || form.notify.split(',')[0],
       name: 'Carepak Website',
       subject: label + ': ' + r.name + (r.organization ? ' (' + r.organization + ')' : ''),
       body: lines.join('\n') + '\n\nAll submissions: https://start.carepakpharmacy.com/admin/'
@@ -54,7 +56,7 @@ function doPost(e) {
     if (type === 'letstalk' && r.emailCopy) {
       MailApp.sendEmail({
         to: r.email,
-        replyTo: RECIPIENTS.split(',')[0],
+        replyTo: form.notify,
         name: 'Carepak Pharmacy',
         subject: 'Your responses to Carepak Pharmacy',
         body: 'Thank you for getting in touch. We will get in touch with you shortly!\n\nHere is a copy of what you sent us.\n\n' +
