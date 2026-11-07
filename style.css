@@ -51,3 +51,5 @@
 @keyframes chat-dots{50%{opacity:.3}}
 @media(max-width:700px){.chat-msg{max-width:95%}.chat-msg div{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.chat-msg,.chat-typing.on span{animation:none}}
+/* Portal: email field above access code */
+.portal-form .portal-email{text-transform:none;letter-spacing:normal;margin-bottom:14px}
