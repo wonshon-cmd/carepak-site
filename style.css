@@ -53,3 +53,6 @@
 @media(prefers-reduced-motion:reduce){.chat-msg,.chat-typing.on span{animation:none}}
 /* Portal: email field above access code */
 .portal-form .portal-email{text-transform:none;letter-spacing:normal;margin-bottom:14px}
+/* Patient portal: date field and three login shortcuts */
+.portal-form .portal-dob{text-transform:none;letter-spacing:normal;margin-bottom:14px}
+.portal-shortcuts{flex-wrap:wrap}
