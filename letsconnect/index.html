@@ -33,7 +33,18 @@ const services=[
 const future=[{id:'bhi',name:'Behavioral health integration · In development'},{id:'ccm',name:'Chronic care management · In development'},{id:'rpm',name:'Remote patient monitoring · In development'}];
 const $=id=>document.getElementById(id);let authorized=false;const selected=new Set();const profile={};
 function show(id){const req=id.startsWith('req');if(id!=='entry'&&!req&&!authorized)return;document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!==id);$('exit').hidden=id==='entry';$('headerCaption').textContent=id==='entry'?'Patient care is our priority.':req?'Request access':'Carepak × '+CONFIG.organization;document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('active',i===(id==='entry'||id==='welcome'||req?0:id==='services'?1:2)));if(id==='services')$('personalGreeting').textContent='Welcome, '+profile.name;if(id==='feedback')renderChoices();window.scrollTo(0,0);const h=$(id).querySelector('h1');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
-$('codeForm').onsubmit=e=>{e.preventDefault();if($('code').value.trim().toLowerCase()!==CONFIG.accessCode){$('codeError').textContent='That code isn’t recognized. Please try again.';$('code').setAttribute('aria-invalid','true');return}authorized=true;window.carepakTrack&&carepakTrack('Entered access code');$('codeError').textContent='';$('code').removeAttribute('aria-invalid');show('welcome')};
+// Personal access codes (CP-XXXXXX) issued by Carepak from the dashboard are checked by the server.
+function personalize(org){CONFIG.organization=org;document.querySelectorAll('.eyebrow').forEach(e=>{if(e.textContent.includes('Mindify'))e.textContent='Carepak × '+org});const w=document.querySelector('#welcome h1 em');if(w)w.textContent=org+'.'}
+$('codeForm').onsubmit=async e=>{e.preventDefault();const raw=$('code').value.trim();
+if(raw.toLowerCase()!==CONFIG.accessCode){
+  const fail=(m)=>{$('codeError').textContent=m;$('code').setAttribute('aria-invalid','true')};
+  if(!/^cp/i.test(raw.replace(/[^a-z0-9]/gi,''))||!window.CAREPAK_API)return fail('That code isn’t recognized. Please try again.');
+  try{const r=await fetch(window.CAREPAK_API+'/api/connect/check-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:raw})});const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.ok)return fail(j.error||'That code isn’t recognized. Please try again.');
+    personalize(j.organization||'your team');$('name').value=j.name||'';$('title').value=j.title||'';$('email').value=j.email||'';
+  }catch{return fail('We couldn’t check that code. Please try again or call '+CONFIG.phone+'.')}
+}
+authorized=true;window.carepakTrack&&carepakTrack('Entered access code');$('codeError').textContent='';$('code').removeAttribute('aria-invalid');show('welcome')};
 $('profileForm').onsubmit=e=>{e.preventDefault();for(const key of ['name','title','email']){if(!$(key).value.trim()){$(key).setCustomValidity('Please enter your '+key+'.');$(key).reportValidity();return}profile[key]=$(key).value.trim()}show('services')};
 ['name','title','email'].forEach(key=>$(key).oninput=()=>$(key).setCustomValidity(''));
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));
