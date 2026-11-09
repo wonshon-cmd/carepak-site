@@ -20,6 +20,8 @@
 <script src="../assets/config.js?v=6"></script><script src="../assets/track.js?v=3"></script><script>
 'use strict';
 // endpoint comes from assets/config.js (Google Apps Script web app URL).
+// Personal codes that work without the server (case and dashes ignored).
+const PERSONAL_CODES={'dane9ay6':{organization:'Dane',name:'Dane'}};
 const CONFIG={accessCode:'mindifyusa',organization:'Mindify',endpoint:window.CAREPAK_ENDPOINT||'',phone:'1.800.601.7092'};
 const services=[
 {id:'pa',name:'STAT prior authorization assistance',short:'Time-sensitive coordination of plan requirements and supporting information with the prescribing office, with ongoing, up-to-date status updates for providers, patients and caregivers.'},
@@ -38,7 +40,9 @@ function show(id){const req=id.startsWith('req');if(id!=='entry'&&!req&&!authori
 // Personal access codes (CP-XXXXXX) issued by Carepak from the dashboard are checked by the server.
 function personalize(org){CONFIG.organization=org;document.querySelectorAll('.eyebrow').forEach(e=>{if(e.textContent.includes('Mindify'))e.textContent='Carepak × '+org});const w=document.querySelector('#welcome h1 em');if(w)w.textContent=org+'.'}
 $('codeForm').onsubmit=async e=>{e.preventDefault();const raw=$('code').value.trim();
-if(raw.toLowerCase()!==CONFIG.accessCode){
+const personal=PERSONAL_CODES[raw.toLowerCase().replace(/[^a-z0-9]/g,'')];
+if(personal){personalize(personal.organization);$('name').value=personal.name||'';$('title').value=personal.title||'';$('email').value=personal.email||''}
+else if(raw.toLowerCase()!==CONFIG.accessCode){
   const fail=(m)=>{$('codeError').textContent=m;$('code').setAttribute('aria-invalid','true')};
   if(!/^cp/i.test(raw.replace(/[^a-z0-9]/gi,''))||!window.CAREPAK_API)return fail('That code isn’t recognized. Please try again.');
   try{const r=await fetch(window.CAREPAK_API+'/api/connect/check-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:raw})});const j=await r.json().catch(()=>({}));
