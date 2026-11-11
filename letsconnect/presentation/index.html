@@ -198,6 +198,14 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
 .mr-why div{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45;color:var(--muted);opacity:0;animation:fade .5s forwards}
 .mr-why b{display:block;color:var(--ink);font-weight:600;font-size:15px;margin-bottom:2px}
 .mr-why .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:grid;place-items:center}
+.hero{justify-content:center;padding:64px 96px;background:radial-gradient(ellipse at 100% 100%,#EAF9FF,transparent 60%)}
+.hero .wordmark{font-size:30px;position:absolute;top:44px;left:96px}.hero .wordmark .care{font-size:16px}
+.hero .eyebrow{color:var(--accent);font-weight:700;letter-spacing:.16em}
+.hero h1{font-size:84px;line-height:1.02;font-weight:400;letter-spacing:-.035em;margin:18px 0 26px;font-family:Arial,Helvetica,sans-serif}
+.hero h1 em{font-style:normal;color:#00A9EE}
+.hero .lead{font-size:26px;color:var(--ink)}
+.hero .hero-tag{font-size:19px;color:var(--muted);margin:10px 0 0}
+.hero > *{opacity:0;animation:fade .7s forwards}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>
@@ -348,6 +356,14 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
 
   // ---------- scenes ----------
   var SCENES = [
+    { name: "Welcome", run: async function () {
+      stage.innerHTML = '<div class="slide hero">' + LOGO + '<span class="eyebrow" style="animation-delay:.2s">Your patients. Your goals. Our support.</span>' +
+        '<h1 style="animation-delay:.5s">Care,<br><em>built around you.</em></h1>' +
+        '<p class="lead" style="animation-delay:1s">Pharmacy, built around your care.</p>' +
+        '<p class="hero-tag" style="animation-delay:1.4s">Your patients at the center. Support around your needs.</p></div>';
+      say("Your patients. Your goals. Our support.");
+      await wait(7000);
+    } },
     { name: "Intro", run: async function () {
       stage.innerHTML = '<div class="slide">' + LOGO + '<h1>Mindify × Carepak Pharmacy</h1><p class="lead">A sample Mindify account with Carepak: one secure chat with the pharmacy for every request. No phone tag, no hold music, no lost faxes.</p>' +
         '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">Medication reconciliation · one refill</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
@@ -559,10 +575,12 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       await wait(7000);
     } },
     { name: "Close", run: async function () {
-      stage.innerHTML = '<div class="slide" style="align-items:center;text-align:center">' + LOGO + '<h1 style="margin-top:22px">Care, connected.</h1><p class="lead">A direct line to the people in their care.</p>' +
-        '<p class="fine" style="margin-top:28px">carepakpharmacy.com · 1.800.601.7092 · Demo with fictional staff and patients.</p></div>';
-      say("Carepak: less phone tag, more care.");
-      await wait(6000);
+      stage.innerHTML = '<div class="slide hero">' + LOGO + '<span class="eyebrow" style="animation-delay:.2s">Your patients. Your goals. Our support.</span>' +
+        '<h1 style="animation-delay:.5s">Care,<br><em>built around you.</em></h1>' +
+        '<p class="lead" style="animation-delay:1s">Pharmacy, built around your care.</p>' +
+        '<p class="hero-tag" style="animation-delay:1.4s">Your patients at the center. Support around your needs.</p></div>';
+      say("Care, built around you. Thank you.");
+      await wait(8000);
     } }
   ];
 
@@ -570,7 +588,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var dots = $("#dots");
   dots.innerHTML = SCENES.map(function (s, i) { return '<button class="dot" data-i="' + i + '" aria-label="Scene ' + (i + 1) + ': ' + s.name + '"><i></i></button>'; }).join("");
   Array.prototype.forEach.call(dots.children, function (d) { d.onclick = function () { go(+d.getAttribute("data-i")); }; });
-  var EST = [5500, 52000, 50000, 22000, 8000, 16000, 15000, 18000, 7000, 6000];
+  var EST = [7000, 5500, 52000, 50000, 22000, 8000, 16000, 15000, 18000, 7000, 8000];
   function drawDots() {
     Array.prototype.forEach.call(dots.children, function (d, i) {
       d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
