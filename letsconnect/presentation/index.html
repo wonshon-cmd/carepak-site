@@ -17,6 +17,7 @@ button{font:inherit;color:inherit}
 .caption{min-height:24px;font-size:16px;color:var(--ink);text-align:center;transition:opacity .3s}
 .ctrls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
 .cbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font-size:13.5px;cursor:pointer}
+.cbtn.fs{background:var(--accent);border-color:var(--accent);color:#fff}.cbtn.fs:hover{color:#fff;opacity:.9}
 .cbtn:hover{border-color:var(--accent);color:var(--accent)}
 .dots{display:flex;gap:6px;margin:0 6px}
 .dot{width:26px;height:6px;border-radius:3px;background:#D3E1E8;border:0;padding:0;cursor:pointer;position:relative;overflow:hidden}
@@ -160,11 +161,21 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
 .plan .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:grid;place-items:center}
 .mo.now{background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--accent)}
 .mo-now{font-size:10px;background:var(--accent);color:#fff;border-radius:999px;padding:1px 7px}
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.svc div{background:var(--panel);border-radius:14px;padding:11px 14px;font-size:12.5px;line-height:1.4;color:var(--muted);opacity:0;animation:fade .5s forwards}
+.svc .no{display:block;font-size:11px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+.svc b{display:block;color:var(--ink);font-weight:600;font-size:14.5px;margin:1px 0 3px}
+.svc .beta{display:inline-block;margin-top:5px;font-size:11px;color:var(--accent);background:var(--soft);border-radius:999px;padding:1px 8px}
+.svc .hl{background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.ahead{display:grid;grid-template-columns:auto repeat(3,1fr);gap:10px;align-items:stretch;margin-top:10px}
+.ahead div{border:1px dashed #BFD9E6;border-radius:12px;padding:8px 12px;font-size:12px;color:var(--muted);opacity:0;animation:fade .5s forwards}
+.ahead b{display:block;color:var(--ink);font-weight:600;font-size:13px}
+.ahead .lbl{border:0;padding:8px 4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);max-width:130px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="top"><span><b>INTERACTIVE DEMO</b> · Fictional people and patients · Sample Mindify account</span><span>Space = pause · ← → = scenes</span></div>
+<div class="top"><span><b>INTERACTIVE DEMO</b> · Fictional people and patients · Sample Mindify account</span><span>Space = pause · ← → = scenes · F = full screen</span></div>
 <div class="viewport" id="vp"><div id="stage" role="region" aria-label="Presentation" aria-live="polite"></div></div>
 <div class="bar">
   <div class="caption" id="cap"></div>
@@ -174,6 +185,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     <button class="cbtn" id="next" aria-label="Next scene">▶</button>
     <div class="dots" id="dots"></div>
     <button class="cbtn" id="restart">Restart</button>
+    <button class="cbtn fs" id="fs" aria-label="Full screen">⤢ Full screen</button>
   </div>
 </div>
 <script>
@@ -461,6 +473,30 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       say("A sample monthly plan: we arrange and plan it together, and every call has a clear focus.");
       await wait(15000);
     } },
+    { name: "Services", run: async function () {
+      var S = [
+        ["STAT prior authorization assistance", "Time-sensitive coordination of plan requirements and supporting information with the prescribing office, with up-to-date status for providers, patients and caregivers."],
+        ["Urgent / STAT same-day delivery", "Delivery for time-sensitive prescriptions and discharge medications in predetermined areas."],
+        ["Urgent / STAT updates", "Updates on prescription readiness and delivery, so everyone knows the next step."],
+        ["Medication reconciliation", "Every medication reconciled into one clear, up-to-date list, with refill dates synced. No more confusion for providers.", true],
+        ["Compounding", "Preparation options for individual patient needs, subject to a prescription, formulation suitability and availability."],
+        ["Packaging choice", "Traditional vials or packets organized by day and time, based on patient preference and medication suitability."],
+        ["Synced refills · one refill at once", "All medications reconciled and refill dates synced. Just one refill request per patient, all at once. Less work for clinical staff.", true],
+        ["Languages we speak", "English, Spanish, Arabic and Tagalog. Confirm language availability with our team."],
+        ["Direct contact & communication", "A direct phone line for pharmacy questions and patient care coordination.", false, "Direct secure chat & updates · Beta"]
+      ];
+      stage.innerHTML = '<div class="slide" style="justify-content:flex-start;padding:36px 52px"><span class="eyebrow">Carepak × Mindify</span><h2 style="font-size:30px;margin:4px 0 2px">Where can we help?</h2>' +
+        '<p class="fine" style="font-size:13.5px;margin:0">Everyday pharmacy services, centered on the patient.</p>' +
+        '<div class="svc">' + S.map(function (x, i) {
+          return '<div class="' + (x[2] ? "hl" : "") + '" style="animation-delay:' + (0.15 + i * 0.18) + 's"><span class="no">' + ("0" + (i + 1)) + "</span><b>" + esc(x[0]) + "</b>" + esc(x[1]) + (x[3] ? '<br><span class="beta">' + esc(x[3]) + "</span>" : "") + "</div>";
+        }).join("") + "</div>" +
+        '<div class="ahead"><div class="lbl" style="animation-delay:1.9s">Looking ahead · In development</div>' +
+        [["Behavioral health integration", "BHI · behavioral and physical health coordination"], ["Chronic care management", "CCM · ongoing coordination for chronic conditions"], ["Remote patient monitoring", "RPM · following health measurements between visits"]].map(function (a, i) {
+          return '<div style="animation-delay:' + (2.1 + i * 0.2) + 's"><b>' + a[0] + "</b>" + a[1] + "</div>";
+        }).join("") + "</div></div>";
+      say("Everyday pharmacy services for Mindify's patients. Medications reconciled, refills synced: one refill, all at once.");
+      await wait(18000);
+    } },
     { name: "Coming: DME", run: async function () {
       stage.innerHTML = '<div class="slide"><span class="eyebrow">Coming in 2027</span><h1>DME, in the same chat</h1><p class="lead">Order, track and confirm durable medical equipment for Mindify\'s patients the same way: one request, one box, every step lit up.</p>' +
         '<div class="dme">' + [["Request", "Order equipment for a patient in the chat."], ["Paperwork", "Orders, notes and proof of delivery as encrypted attachments."], ["Track", "Ordered → approved → shipped → delivered."], ["Green / red", "Problems flagged red until they're fixed."]].map(function (d, i) { return '<div style="animation-delay:' + (0.3 + i * 0.3) + 's"><b>' + d[0] + "</b>" + d[1] + "</div>"; }).join("") +
@@ -480,7 +516,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var dots = $("#dots");
   dots.innerHTML = SCENES.map(function (s, i) { return '<button class="dot" data-i="' + i + '" aria-label="Scene ' + (i + 1) + ': ' + s.name + '"><i></i></button>'; }).join("");
   Array.prototype.forEach.call(dots.children, function (d) { d.onclick = function () { go(+d.getAttribute("data-i")); }; });
-  var EST = [5500, 52000, 50000, 8000, 16000, 15000, 7000, 6000];
+  var EST = [5500, 52000, 50000, 8000, 16000, 15000, 18000, 7000, 6000];
   function drawDots() {
     Array.prototype.forEach.call(dots.children, function (d, i) {
       d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
@@ -506,6 +542,19 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     if (e.key === "ArrowRight") go(scene + 1);
     if (e.key === "ArrowLeft") go(scene - 1);
   });
+  // ---- full screen (falls back to opening this page on its own, e.g. on iPhone) ----
+  var root = document.documentElement, fsBtn = $("#fs");
+  function isFs() { return document.fullscreenElement || document.webkitFullscreenElement; }
+  function fsLabel() { fsBtn.textContent = isFs() ? "✕ Exit full screen" : "⤢ Full screen"; setTimeout(fit, 120); }
+  fsBtn.onclick = function () {
+    if (isFs()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+    var req = root.requestFullscreen || root.webkitRequestFullscreen;
+    if (req && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+      var r = req.call(root); if (r && r.catch) r.catch(function () { window.open(location.href, "_blank"); });
+    } else window.open(location.href, "_blank");
+  };
+  document.addEventListener("fullscreenchange", fsLabel); document.addEventListener("webkitfullscreenchange", fsLabel);
+  document.addEventListener("keydown", function (e) { if (e.key === "f" || e.key === "F") fsBtn.click(); });
   go(0);
 })();
 </script>
