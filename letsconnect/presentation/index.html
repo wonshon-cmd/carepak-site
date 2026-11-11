@@ -206,6 +206,20 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
 .hero .lead{font-size:26px;color:var(--ink)}
 .hero .hero-tag{font-size:19px;color:var(--muted);margin:10px 0 0}
 .hero > *{opacity:0;animation:fade .7s forwards}
+.ph{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:56px 72px}
+.ph > div{opacity:0;animation:fade .6s forwards}
+.ph h1{font-size:54px;line-height:1.05;font-weight:600;letter-spacing:-.03em;margin:14px 0 18px}.ph h1 em,.big-em em{font-style:normal;color:#00A9EE}
+.ph .lead{font-size:19px}.ph .note{margin-top:18px;font-size:13px;color:var(--accent);background:var(--soft);display:inline-block;border-radius:999px;padding:5px 12px}
+.ph figure{margin:0;display:flex;justify-content:center;align-items:center;height:560px;opacity:0;animation:fade .7s .4s forwards}
+.ph figure img{max-width:100%;max-height:100%;object-fit:contain;border-radius:18px}
+.ph figure.doc img{box-shadow:0 14px 40px rgba(20,38,49,.14);border-radius:6px}
+.comp{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+.comp div{background:var(--panel);border-radius:12px;padding:12px 14px;font-size:15px;opacity:0;animation:fade .5s forwards}
+.meet{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.meet div{background:var(--panel);border-radius:18px;padding:20px;font-size:14.5px;color:var(--muted);opacity:0;animation:fade .5s forwards}
+.meet .no{display:block;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:8px}
+.meet b{display:block;color:var(--ink);font-size:19px;font-weight:600;margin-bottom:4px}
+.big-em h1{font-size:76px;line-height:1.04;font-weight:400;letter-spacing:-.035em;font-family:Arial,Helvetica,sans-serif}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>
@@ -342,6 +356,10 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   function unpin() { var p = $("#pin"); if (p) p.classList.remove("show"); }
   function speed(text) { var s = $("#speed"); s.style.display = "block"; s.innerHTML = "Carepak average reply<b>" + esc(text) + "</b>"; }
 
+  function photoSlide(o) {
+    stage.innerHTML = '<div class="slide ph"><div><span class="eyebrow">' + esc(o.eyebrow) + '</span><h1>' + esc(o.h) + '<br><em>' + esc(o.em) + '</em></h1><p class="lead">' + esc(o.text) + '</p>' +
+      (o.note ? '<span class="note">' + esc(o.note) + "</span>" : "") + '</div><figure class="' + (o.doc ? "doc" : "") + '"><img src="' + o.img + '" alt="' + esc(o.alt) + '"></figure></div>';
+  }
   var KIM = { who: "Kim Ortiz", role: "Care Coordinator", org: "Mindify", out: true };
   var DANA = { who: "Dana Park, PharmD", role: "Pharmacist", org: "Carepak Pharmacy" };
   var LUIS = { who: "Luis Ortega", role: "Pharmacy Technician", org: "Carepak Pharmacy" };
@@ -366,7 +384,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     } },
     { name: "Intro", run: async function () {
       stage.innerHTML = '<div class="slide">' + LOGO + '<h1>Mindify × Carepak Pharmacy</h1><p class="lead">A sample Mindify account with Carepak: one secure chat with the pharmacy for every request. No phone tag, no hold music, no lost faxes.</p>' +
-        '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">Medication reconciliation · one refill</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
+        '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">Medication reconciliation · one refill</span><span class="pill">Vials or strip packaging</span><span class="pill">Compounding</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
         '<p class="fine" style="margin-top:30px">Demo with fictional staff and patients. Signed in as Kim Ortiz, Care Coordinator at Mindify (carepakpharmacy.com/mindify).</p></div>';
       say("A sample Mindify account: what working with Carepak looks like.");
       await wait(5500);
@@ -481,6 +499,29 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       say("One reconciled list. One refill, all at once. No confusion for providers, less work for clinical staff.");
       await wait(9000);
     } },
+    { name: "Monthly list", run: async function () {
+      photoSlide({ eyebrow: "Medication reconciliation", h: "Reconciled medication list.", em: "Every monthly shipment.", text: "A shared reference for the patient, caregiver, and your office. Free delivery for routine monthly medications.", img: "img/reconciled-list.png", alt: "Sample Carepak reconciled medication list", doc: true });
+      say("A reconciled medication list comes with every monthly shipment.");
+      await wait(10000);
+    } },
+    { name: "Vials", run: async function () {
+      photoSlide({ eyebrow: "Your patient's preference", h: "Individual vials.", em: "Their choice.", text: "Traditional medication vials for patients who prefer them. Packaging tailored to the patient's routine.", note: "Individual vials or strip packaging · Patient preference", img: "img/vials.jpg", alt: "Carepak individual prescription medication vials" });
+      say("Packaging is the patient's choice: traditional vials…");
+      await wait(9000);
+    } },
+    { name: "Strip packaging", run: async function () {
+      photoSlide({ eyebrow: "Simplified medications", h: "Strip packaging.", em: "A simpler routine.", text: "For patients who prefer organized packets: medications clearly labeled by day and time.", note: "Individual vials or strip packaging · Patient preference", img: "img/strip-packaging.jpg", alt: "Carepak medication strip packets in a dispenser" });
+      say("…or strip packets labeled by day and time.");
+      await wait(9000);
+    } },
+    { name: "Compounding", run: async function () {
+      var C = ["Dapsone suspension", "Flagyl (metronidazole) suspension", "Salicylic acid creams · various strengths", "Progesterone vaginal suppositories", "Progesterone capsules", "Tretinoin combination creams"];
+      stage.innerHTML = '<div class="slide ph"><div><span class="eyebrow">Tailored services</span><h1>Compounding.<br><em>Individual needs.</em></h1><p class="lead">Contact us to discuss prescriptions, formulations, and availability.</p></div>' +
+        '<div style="animation-delay:.3s"><p class="fine" style="font-size:14px;margin:0 0 10px">Preparations include, but are not limited to:</p><div class="comp">' +
+        C.map(function (c, i) { return '<div style="animation-delay:' + (0.5 + i * 0.2) + 's">' + esc(c) + "</div>"; }).join("") + "</div></div></div>";
+      say("Compounding for individual patient needs.");
+      await wait(10000);
+    } },
     { name: "Features", run: async function () {
       stage.innerHTML = '<div class="slide"><span class="eyebrow">What you just saw</span><h2>Everything in one secure chat</h2>' +
         '<div class="feat">' + [
@@ -574,6 +615,20 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       say("Coming next year: DME products, with the same simple tracking.");
       await wait(7000);
     } },
+    { name: "Meet Carepak", run: async function () {
+      stage.innerHTML = '<div class="slide"><span class="eyebrow">Service organization</span><div class="ph" style="padding:0;display:block"><h1>Meet with Carepak.<br><em>Organize your workflow.</em></h1></div>' +
+        '<p class="lead">Meet with our team to organize patient services around your office\'s workflow, responsibilities, and communication needs.</p><div class="meet">' +
+        [["01", "Meet & align.", "Understand patient needs and your office workflow."], ["02", "Prepare & organize.", "Set responsibilities and coordinate the service."], ["03", "Keep care connected.", "Chat, patient updates, delivery, and PA assistance."]].map(function (m, i) {
+          return '<div style="animation-delay:' + (0.4 + i * 0.3) + 's"><span class="no">' + m[0] + "</span><b>" + m[1] + "</b>" + m[2] + "</div>";
+        }).join("") + '</div><p class="fine" style="margin-top:16px">Carepak secure chat · Work in progress</p></div>';
+      say("Meet with Carepak, and we organize the service around your office's workflow.");
+      await wait(11000);
+    } },
+    { name: "One less call", run: async function () {
+      stage.innerHTML = '<div class="slide hero big-em">' + LOGO + '<span class="eyebrow" style="animation-delay:.2s">Care, connected</span><h1 style="animation-delay:.5s">One less call.<br><em>More time for patients.</em></h1></div>';
+      say("Care, connected. One less call. More time for patients.");
+      await wait(8000);
+    } },
     { name: "Close", run: async function () {
       stage.innerHTML = '<div class="slide hero">' + LOGO + '<span class="eyebrow" style="animation-delay:.2s">Your patients. Your goals. Our support.</span>' +
         '<h1 style="animation-delay:.5s">Care,<br><em>built around you.</em></h1>' +
@@ -588,7 +643,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var dots = $("#dots");
   dots.innerHTML = SCENES.map(function (s, i) { return '<button class="dot" data-i="' + i + '" aria-label="Scene ' + (i + 1) + ': ' + s.name + '"><i></i></button>'; }).join("");
   Array.prototype.forEach.call(dots.children, function (d) { d.onclick = function () { go(+d.getAttribute("data-i")); }; });
-  var EST = [7000, 5500, 52000, 50000, 22000, 8000, 16000, 15000, 18000, 7000, 8000];
+  var EST = [7000, 5500, 52000, 50000, 22000, 10000, 9000, 9000, 10000, 8000, 16000, 15000, 18000, 7000, 11000, 8000, 8000];
   function drawDots() {
     Array.prototype.forEach.call(dots.children, function (d, i) {
       d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
