@@ -1,3 +1,513 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Carepak presentation</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:Arial,Helvetica,sans-serif;color:#142631;background:linear-gradient(135deg,#edf9ff,#fff)}div{text-align:center;padding:24px}b{color:#00a9ee}p{color:#657d89;max-width:420px;margin:12px auto 0;line-height:1.5}h1{font-weight:400;font-size:clamp(28px,6vw,44px);margin:0}</style></head>
-<body><div><h1><b>(</b> Carepak <b>)</b></h1><p>The presentation will appear here shortly.<br>Tap <strong>Continue</strong> to explore Carepak services.</p></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carepak · Mindify showcase</title>
+<style>
+:root{--accent:#0A84BA;--soft:#E3F4FC;--ink:#142631;--muted:#657D89;--line:#E1EAEF;--bg:#EEF6FA;--panel:#F5F9FB;--card:#fff;--green:#2E9B62;--red:#C8453B;--redbg:#FBEDEB;--redink:#7A2C25}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+.top{height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+.top b{font-weight:600;color:var(--ink)}
+.viewport{position:relative;height:calc(100% - 44px - 92px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;transform-origin:center center;background:var(--card);border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 40px rgba(20,38,49,.08);overflow:hidden}
+.bar{height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0 16px}
+.caption{min-height:24px;font-size:16px;color:var(--ink);text-align:center;transition:opacity .3s}
+.ctrls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.cbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font-size:13.5px;cursor:pointer}
+.cbtn:hover{border-color:var(--accent);color:var(--accent)}
+.dots{display:flex;gap:6px;margin:0 6px}
+.dot{width:26px;height:6px;border-radius:3px;background:#D3E1E8;border:0;padding:0;cursor:pointer;position:relative;overflow:hidden}
+.dot.on{background:#BFDDEC}.dot.on i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0}
+.dot.done{background:var(--accent)}
+/* ---------- slides ---------- */
+.slide{position:absolute;inset:0;padding:64px 80px;display:flex;flex-direction:column;justify-content:center;opacity:0;animation:fade .6s forwards}
+@keyframes fade{to{opacity:1}}
+.wordmark{display:inline-flex;align-items:baseline;gap:4px;font-weight:600;font-size:44px;letter-spacing:-.02em;color:var(--ink);font-family:Arial,Helvetica,sans-serif}.wordmark .br{color:#00A9EE;font-weight:400}
+.wordmark svg{width:30px;height:30px;color:var(--accent);transform:translateY(4px)}
+.wordmark .care{font-weight:400;font-size:24px;color:var(--muted);letter-spacing:0;margin-left:6px}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:46px;line-height:1.12;font-weight:600;letter-spacing:-.02em;margin:18px 0 12px}
+h2{font-size:34px;font-weight:600;letter-spacing:-.01em;margin:10px 0 8px}
+.lead{font-size:20px;color:var(--muted);max-width:820px;margin:0}
+.pill{display:inline-block;background:var(--soft);color:var(--accent);border-radius:999px;padding:4px 12px;font-size:13px;margin-right:8px}
+.fine{font-size:12px;color:var(--muted);line-height:1.5}
+/* ---------- app mock ---------- */
+.app{position:absolute;inset:0;display:grid;grid-template-columns:300px 1fr;opacity:0;animation:fade .5s forwards}
+.side{background:var(--panel);border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column;min-height:0}
+.side .wordmark{font-size:30px}.side .wordmark svg{width:21px;height:21px;transform:translateY(3px)}.side .wordmark .care{font-size:17px}
+.url{font-size:11.5px;color:var(--muted);margin:6px 0 14px;font-family:ui-monospace,Menlo,monospace}
+.ws{display:flex;flex-direction:column;margin-bottom:14px}.ws .eyebrow{font-size:11px}
+.sbtn{border:0;background:var(--soft);color:var(--accent);border-radius:12px;padding:9px;text-align:center;font-size:14px;margin-bottom:12px}
+.list{flex:1;overflow:hidden}
+.list .eyebrow{font-size:10.5px;margin:4px 6px 6px}
+.thread{border-radius:12px;padding:9px 10px;margin-bottom:2px;transition:background .3s}
+.thread.on{background:var(--soft)}
+.t-top{display:flex;align-items:center;gap:6px}
+.t-title{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-title.unread{font-weight:700}
+.tag{font-size:10.5px;color:var(--muted);background:var(--line);padding:1px 7px;border-radius:999px;white-space:nowrap}
+.tag.strong{background:#F3E3D3;color:#8A5A2B}
+.t-sub{font-size:11.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.chip{font-size:10.5px;color:var(--accent);background:var(--soft);padding:1px 7px;border-radius:999px}
+.me{border-top:1px solid var(--line);padding-top:12px;font-size:13px}
+.me .muted{color:var(--muted);font-size:12px}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.head{padding:16px 24px 12px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.h-main{flex:1;min-width:0}
+.h-title{font-size:17px;font-weight:600}
+.h-sub{font-size:12.5px;color:var(--muted)}
+.direct{display:inline-block;margin-top:6px;background:var(--panel);border-radius:8px;padding:3px 9px;font-size:11.5px;color:var(--muted)}
+.direct b{color:var(--ink);font-weight:600}
+.lights{display:flex;gap:6px}
+.lb{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-size:12.5px;display:inline-flex;align-items:center;transition:all .3s}
+.lb.ok-on{background:#E8F5EE;border-color:var(--green);color:#1F6E45}
+.lb.issue-on{background:var(--redbg);border-color:var(--red);color:var(--redink)}
+.issuebar{flex-basis:100%;background:var(--redbg);color:var(--redink);border-radius:10px;padding:7px 12px;font-size:13px;animation:fade .4s}
+.light{flex:none;display:inline-block;width:9px;height:9px;border-radius:50%;background:#B9C2BD;margin-right:6px}
+.light.ok{background:var(--green);animation:bok 2.4s ease-in-out infinite}
+.light.issue{background:var(--red);animation:bis 1.2s ease-in-out infinite}
+.light.still{animation:none}
+@keyframes bok{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(46,155,98,.45)}50%{opacity:.45;box-shadow:0 0 0 4px rgba(46,155,98,0)}}
+@keyframes bis{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(200,69,59,.5)}50%{opacity:.35;box-shadow:0 0 0 5px rgba(200,69,59,0)}}
+.wfstrip{border-bottom:1px solid var(--line);background:#FAFDFE;padding:10px 24px;display:none}
+.wfstrip.show{display:block;animation:fade .4s}
+.wf{border:1px solid #CFE5F0;border-radius:14px;background:#fff;padding:10px 14px}
+.wf-row{display:flex;align-items:center;gap:10px}
+.ring{width:30px;height:30px;border-radius:50%;flex:none;background:conic-gradient(var(--accent) calc(var(--p)*1%),#E1ECF2 0);display:grid;place-items:center;transition:--p .6s}
+.ring::after{content:"";width:22px;height:22px;border-radius:50%;background:#fff}
+.wf-main{flex:1;min-width:0}
+.wf-title{font-size:14px}
+.wf-sub{font-size:12px;color:var(--accent)}
+.wf-count{font-size:12px;color:var(--muted)}
+.steps{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:5px 9px;font-size:12px;color:var(--muted);transition:all .45s}
+.step .sd{width:14px;height:14px;border-radius:50%;border:1.5px solid #C5D3DA;display:grid;place-items:center;font-size:9px;color:#fff;transition:all .45s;flex:none}
+.step.done{background:#E6F4FB;border-color:#B5DCEE;color:#0B5F86}
+.step.done .sd{background:var(--accent);border-color:var(--accent)}
+.step.flash{box-shadow:0 0 0 4px rgba(10,132,186,.15)}
+.step small{color:#3D7F9F}
+.msgs{flex:1;overflow:hidden;padding:16px 24px;display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+.msg{display:flex;flex-direction:column;max-width:72%;animation:pop .35s ease-out}
+.msg.out{align-self:flex-end;align-items:flex-end}
+.msg.in{align-self:flex-start}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sender{font-size:11.5px;color:var(--muted);margin:0 4px 3px}
+.sender b{color:var(--ink);font-weight:600}
+.bubble{border-radius:16px;padding:9px 13px;font-size:14.5px;background:#fff;border:1px solid var(--line)}
+.msg.out .bubble{background:#E6F4FB;border-color:#CDE7F4}
+.bubble.urgent{border-color:#E5B98F;background:#FFF7EF}
+.utag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;color:#8A5A2B;background:#F6E3CF;border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.meta{display:block;text-align:right;font-size:10.5px;color:var(--muted);margin-top:3px}
+.meta .fast{color:var(--accent);font-weight:600}
+.att{display:flex;align-items:center;gap:10px;margin-top:7px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:12.5px}
+.att .ic{width:26px;height:32px;border-radius:4px;background:#F1D9D5;color:#9B3A2F;font-size:9px;font-weight:700;display:grid;place-items:center;flex:none}
+.att small{display:block;color:var(--muted);font-size:11px}
+.sline{align-self:center;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:#F2F8FB;border-radius:999px;padding:5px 12px;animation:pop .35s}
+.sline.issue{background:var(--redbg);color:var(--redink);border-radius:12px;max-width:80%}
+.sline.green{background:#E8F5EE;color:#1F6E45}
+.typing{align-self:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 13px;display:flex;gap:4px;animation:pop .3s}
+.typing.out{align-self:flex-end;background:#E6F4FB}
+.typing i{width:6px;height:6px;border-radius:50%;background:#9AABB4;animation:ty 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes ty{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+.composer{margin:0 24px 16px;border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;align-items:flex-end;gap:8px;min-height:62px;transition:border-color .3s,background .3s}
+.composer.urgent{border-color:#E5B98F;background:#FFFBF6}
+.ctext{flex:1;font-size:14.5px;color:var(--muted);min-height:20px}
+.ctext.typed{color:var(--ink)}
+.ctext .cur{display:inline-block;width:1.5px;height:16px;background:var(--accent);vertical-align:-3px;animation:blink 1s steps(1) infinite;margin-left:1px}
+@keyframes blink{50%{opacity:0}}
+.cb{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;transition:all .25s}
+.cb.on{background:#F6E3CF;border-color:#E5B98F;color:#8A5A2B}
+.cb.send{background:var(--accent);border-color:var(--accent);color:#fff}
+.cb.press{transform:scale(.94)}
+.speed{position:absolute;left:18px;width:264px;bottom:92px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:0 6px 18px rgba(0,0,0,.05);z-index:3}
+.speed b{color:var(--accent);font-size:15px;display:block}
+.pin{position:absolute;z-index:5;background:var(--ink);color:#fff;border-radius:10px;padding:7px 11px;font-size:12.5px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:all .35s;pointer-events:none;max-width:280px}
+.pin.show{opacity:1;transform:none}
+.pin::after{content:"";position:absolute;width:10px;height:10px;background:var(--ink);transform:rotate(45deg)}
+.pin.l::after{left:-4px;top:12px}.pin.t::after{top:-4px;left:18px}.pin.b::after{bottom:-4px;left:18px}
+/* ---------- BHI ---------- */
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:start;margin-top:18px}
+table.rates{width:100%;border-collapse:collapse;font-size:15px}
+.rates th{text-align:left;font-weight:500;color:var(--muted);font-size:12.5px;border-bottom:1px solid var(--line);padding:6px 8px}
+.rates td{border-bottom:1px solid var(--line);padding:11px 8px;vertical-align:top}
+.rates td.amt{font-weight:600;color:var(--accent);white-space:nowrap;font-size:17px}
+.rates .code{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--muted)}
+.rates tr{opacity:0;animation:fade .5s forwards}
+.box{background:var(--panel);border-radius:18px;padding:20px 22px;opacity:0;animation:fade .6s forwards}
+.box h3{margin:0 0 8px;font-size:17px;font-weight:600}
+.big{font-size:38px;font-weight:600;color:var(--accent);letter-spacing:-.02em;line-height:1.1}
+.flow{display:flex;flex-direction:column;gap:8px;margin-top:10px;font-size:14.5px}
+.flow div{display:flex;gap:10px;align-items:flex-start}
+.flow span.n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:grid;place-items:center;margin-top:1px}
+.dme{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+.dme div{background:var(--panel);border-radius:16px;padding:18px;font-size:15px;opacity:0;animation:fade .5s forwards}
+.dme b{display:block;font-weight:600;margin-bottom:4px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.feat div{background:var(--panel);border-radius:16px;padding:16px 18px;font-size:14.5px;color:var(--muted);opacity:0;animation:fade .5s forwards}
+.feat b{display:block;color:var(--ink);font-weight:600;margin-bottom:3px;font-size:15.5px}
+.months{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.mo{background:var(--panel);border-radius:14px;padding:11px 13px;font-size:12px;line-height:1.4;color:var(--muted);opacity:0;animation:fade .5s forwards;display:flex;flex-direction:column;gap:2px}
+.mo b{color:var(--ink);font-weight:600;font-size:13.5px;line-height:1.25}
+.mo-top{display:flex;justify-content:space-between;align-items:center}
+.mo-name{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.plan div{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--muted);opacity:0;animation:fade .5s forwards}
+.plan b{display:block;color:var(--ink);font-weight:600;font-size:14px}
+.plan .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:grid;place-items:center}
+.mo.now{background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.mo-now{font-size:10px;background:var(--accent);color:#fff;border-radius:999px;padding:1px 7px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><span><b>INTERACTIVE DEMO</b> · Fictional people and patients · Sample Mindify account</span><span>Space = pause · ← → = scenes</span></div>
+<div class="viewport" id="vp"><div id="stage" role="region" aria-label="Presentation" aria-live="polite"></div></div>
+<div class="bar">
+  <div class="caption" id="cap"></div>
+  <div class="ctrls">
+    <button class="cbtn" id="prev" aria-label="Previous scene">◀</button>
+    <button class="cbtn" id="play" aria-label="Pause">Pause</button>
+    <button class="cbtn" id="next" aria-label="Next scene">▶</button>
+    <div class="dots" id="dots"></div>
+    <button class="cbtn" id="restart">Restart</button>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var stage = $("#stage"), cap = $("#cap");
+  var token = 0, paused = false, scene = 0, sceneStart = 0, sceneElapsed = 0;
+  var SPEED = 2; // play twice as fast
+  var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---- fit the 1280x720 stage to the window ----
+  function fit() {
+    var vp = $("#vp"), s = Math.min(vp.clientWidth / 1300, vp.clientHeight / 735);
+    stage.style.transform = "translate(-50%,-50%) scale(" + Math.max(s, 0.2) + ")";
+  }
+  window.addEventListener("resize", fit); fit();
+
+  // ---- pausable timing ----
+  function wait(ms) {
+    var t = token;
+    return new Promise(function (res, rej) {
+      var left = ms / SPEED, last = performance.now();
+      (function tick() {
+        if (t !== token) return rej("cancel");
+        var now = performance.now();
+        if (!paused) { left -= now - last; sceneElapsed += now - last; }
+        last = now;
+        if (left <= 0) res(); else setTimeout(tick, 30);
+      })();
+    });
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function say(t) { cap.style.opacity = 0; setTimeout(function () { cap.textContent = t; cap.style.opacity = 1; }, 180); }
+  var LOGO = '<span class="wordmark"><span class="br">(</span>Carepak<span class="br">)</span><span class="care">Pharmacy</span></span>';
+
+  // ---- app mock ----
+  var THREADS = {
+    s1: { title: "Invega Sustenna 234 mg · in stock?", sub: "Carepak Pharmacy", chips: [] },
+    s2: { title: "PA · Caplyta 42 mg · M. Okafor", sub: "Carepak Pharmacy", chips: [] },
+    r1: { title: "Med rec list · A. Brooks", sub: "Carepak Pharmacy", chips: [], tag: "" },
+    r2: { title: "Refill question · T. Nguyen", sub: "Carepak Pharmacy", chips: [], tag: "" }
+  };
+  function threadHtml(id, t, on) {
+    return '<div class="thread' + (on ? " on" : "") + '" id="th-' + id + '"><div class="t-top">' +
+      (t.light ? '<span class="light ' + t.light + '"></span>' : "") + '<span class="t-title' + (t.unread ? " unread" : "") + '">' + esc(t.title) + "</span>" +
+      (t.tag ? '<span class="tag' + (t.strong ? " strong" : "") + '">' + esc(t.tag) + "</span>" : "") + "</div>" +
+      '<div class="t-sub">' + esc(t.sub) + t.chips.map(function (c) { return '<span class="chip">' + esc(c) + "</span>"; }).join("") + "</div></div>";
+  }
+  function drawList(order, active) {
+    $("#tl").innerHTML = '<div class="eyebrow">Conversations · by importance</div>' + order.map(function (id) { return threadHtml(id, THREADS[id], id === active); }).join("");
+  }
+  function app(o) {
+    stage.innerHTML = '<div class="app"><aside class="side">' + LOGO +
+      '<div class="url">carepakpharmacy.com/mindify</div>' +
+      '<div class="ws"><span class="eyebrow">Mindify · Carepak Pharmacy</span><span style="font-size:12px;color:var(--muted)">Secure workspace</span></div>' +
+      '<div class="sbtn">New chat</div><div class="list" id="tl"></div>' +
+      '<div class="me"><div>Kim Ortiz</div><div class="muted">Care Coordinator · Mindify</div></div></aside>' +
+      '<main class="main"><header class="head"><div class="h-main"><div class="h-title" id="ht">' + esc(o.title) + '</div><div class="h-sub">Mindify ↔ Carepak Pharmacy</div>' +
+      '<span class="direct">Carepak direct line <b>1.800.601.7092</b></span></div>' +
+      '<div class="lights"><span class="lb" id="lbOk"><span class="light ok still"></span>All okay</span><span class="lb" id="lbIs"><span class="light issue still"></span>Issue</span></div></header>' +
+      '<section class="wfstrip" id="wfs"></section><section class="msgs" id="msgs"></section>' +
+      '<div class="composer" id="comp"><div class="ctext" id="ct">Write a message…</div><span class="cb">Workflow</span><span class="cb" id="ub">Urgent</span><span class="cb send" id="sb">Send</span></div>' +
+      '</main><div class="speed" id="speed" style="display:none"></div><div class="pin" id="pin"></div></div>';
+  }
+  function scrollMsgs() { var m = $("#msgs"); while (m.scrollHeight > m.clientHeight + 4 && m.children.length > 2) m.removeChild(m.firstChild); }
+  function addMsg(o) {
+    var t = $(".typing", $("#msgs")); if (t) t.remove();
+    var d = document.createElement("div");
+    d.className = "msg " + (o.out ? "out" : "in");
+    d.innerHTML = '<div class="sender"><b>' + esc(o.who) + "</b> · " + esc(o.role) + " · " + esc(o.org) + '</div><div class="bubble' + (o.urgent ? " urgent" : "") + '">' +
+      (o.urgent ? '<span class="utag">URGENT</span>' : "") + esc(o.text) + (o.att ? attHtml(o.att) : "") +
+      '<span class="meta">' + (o.replied ? '<span class="fast">Replied in ' + esc(o.replied) + "</span> · " : "") + esc(o.at) + "</span></div>";
+    $("#msgs").appendChild(d); scrollMsgs();
+  }
+  // reading time after each message
+  async function post(o) { addMsg(o); await wait(1500 + o.text.length * 32); }
+  function attHtml(a) { return '<div class="att"><span class="ic">PDF</span><span>' + esc(a.name) + "<small>" + esc(a.info) + "</small></span></div>"; }
+  function line(html, cls) { var d = document.createElement("div"); d.className = "sline " + (cls || ""); d.innerHTML = html; $("#msgs").appendChild(d); scrollMsgs(); }
+  function typing(out) { var d = document.createElement("div"); d.className = "typing" + (out ? " out" : ""); d.innerHTML = "<i></i><i></i><i></i>"; $("#msgs").appendChild(d); scrollMsgs(); }
+  async function compose(text, urgent) {
+    var ct = $("#ct");
+    if (urgent) { $("#ub").classList.add("on", "press"); $("#comp").classList.add("urgent"); await wait(250); $("#ub").classList.remove("press"); }
+    ct.classList.add("typed"); ct.innerHTML = '<span class="cur"></span>';
+    var step = REDUCED ? text.length : 2;
+    for (var i = 0; i <= text.length; i += step) { ct.innerHTML = esc(text.slice(0, i)) + '<span class="cur"></span>'; await wait(45); }
+    ct.innerHTML = esc(text);
+    await wait(350); $("#sb").classList.add("press"); await wait(160); $("#sb").classList.remove("press");
+    ct.classList.remove("typed"); ct.textContent = "Write a message…";
+    $("#ub").classList.remove("on"); $("#comp").classList.remove("urgent");
+  }
+  var WF = null;
+  function workflow(name, patient, steps) {
+    WF = { name: name, patient: patient, steps: steps.map(function (s) { return { label: s, done: false }; }) };
+    $("#wfs").classList.add("show"); drawWf();
+    line('<span class="light ok still"></span>Workflow started: <b>&nbsp;' + esc(name) + "</b>&nbsp;· " + esc(patient));
+  }
+  function drawWf(flash) {
+    var done = WF.steps.filter(function (s) { return s.done; }), last = done[done.length - 1];
+    $("#wfs").innerHTML = '<div class="wf"><div class="wf-row"><span class="ring" style="--p:' + Math.round(done.length / WF.steps.length * 100) + '"></span>' +
+      '<span class="wf-main"><span class="wf-title"><b>' + esc(WF.patient) + "</b> · " + esc(WF.name) + '</span><br><span class="wf-sub">' + (last ? "✓ " + esc(last.label) + " · " + esc(last.at) + " · " + esc(last.by) : "Not started") + "</span></span>" +
+      '<span class="wf-count">' + done.length + " of " + WF.steps.length + "</span></div>" +
+      '<div class="steps">' + WF.steps.map(function (s, i) {
+        return '<span class="step' + (s.done ? " done" : "") + (i === flash ? " flash" : "") + '"><span class="sd">' + (s.done ? "✓" : "") + "</span>" + esc(s.label) + (s.done ? " <small>" + esc(s.at) + "</small>" : "") + "</span>";
+      }).join("") + "</div></div>";
+  }
+  async function stepDone(i, by, at, note) {
+    WF.steps[i].done = true; WF.steps[i].by = by; WF.steps[i].at = at; drawWf(i);
+    if (note !== false) line("✓ " + esc(by) + " · <b>" + esc(WF.steps[i].label) + "</b>" + (note ? " · " + esc(note) : ""), "green");
+    await wait(note === false ? 1500 : 2100); drawWf();
+  }
+  function setLight(id, st) {
+    THREADS[id].light = st;
+    $("#lbOk").classList.toggle("ok-on", st === "ok"); $("#lbIs").classList.toggle("issue-on", st === "issue");
+    var ib = $(".issuebar"); if (ib) ib.remove();
+  }
+  function issueBar(text) { var d = document.createElement("div"); d.className = "issuebar"; d.innerHTML = '<span class="light issue"></span><b>Issue:</b> ' + esc(text); $(".head").appendChild(d); }
+  function pin(text, x, y, side) { var p = $("#pin"); p.className = "pin " + (side || "t"); p.style.left = x + "px"; p.style.top = y + "px"; p.textContent = text; requestAnimationFrame(function () { p.classList.add("show"); }); }
+  function unpin() { var p = $("#pin"); if (p) p.classList.remove("show"); }
+  function speed(text) { var s = $("#speed"); s.style.display = "block"; s.innerHTML = "Carepak average reply<b>" + esc(text) + "</b>"; }
+
+  var KIM = { who: "Kim Ortiz", role: "Care Coordinator", org: "Mindify", out: true };
+  var DANA = { who: "Dana Park, PharmD", role: "Pharmacist", org: "Carepak Pharmacy" };
+  var LUIS = { who: "Luis Ortega", role: "Pharmacy Technician", org: "Carepak Pharmacy" };
+  var SAM = { who: "Sam Rivera", role: "Delivery Driver", org: "Carepak Pharmacy" };
+  function as(p, o) { var r = {}; for (var k in p) r[k] = p[k]; for (var j in o) r[j] = o[j]; return r; }
+  function resetThreads() {
+    THREADS.s1 = { title: "Invega Sustenna 234 mg · in stock?", sub: "Carepak Pharmacy", chips: [] };
+    THREADS.s2 = { title: "PA · Caplyta 42 mg · M. Okafor", sub: "Carepak Pharmacy", chips: [] };
+    THREADS.r1 = { title: "Med rec list · A. Brooks", sub: "Carepak Pharmacy", chips: [], light: "ok" };
+    THREADS.r2 = { title: "Refill question · T. Nguyen", sub: "Carepak Pharmacy", chips: [] };
+  }
+
+  // ---------- scenes ----------
+  var SCENES = [
+    { name: "Intro", run: async function () {
+      stage.innerHTML = '<div class="slide">' + LOGO + '<h1>Mindify × Carepak Pharmacy</h1><p class="lead">A sample Mindify account with Carepak: one secure chat with the pharmacy for every request. No phone tag, no hold music, no lost faxes.</p>' +
+        '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
+        '<p class="fine" style="margin-top:30px">Demo with fictional staff and patients. Signed in as Kim Ortiz, Care Coordinator at Mindify (carepakpharmacy.com/mindify).</p></div>';
+      say("A sample Mindify account: what working with Carepak looks like.");
+      await wait(5500);
+    } },
+    { name: "Story 1", run: async function () {
+      resetThreads();
+      app({ title: THREADS.s1.title });
+      drawList(["s1", "r1", "r2"], "s1");
+      say("Story 1 · Mindify asks if a medication is in stock.");
+      await wait(900);
+      await compose("Hi! Do you have Invega Sustenna 234 mg in stock? Patient: Renee Delgado, DOB 04/12/1988.");
+      await post(as(KIM, { text: "Hi! Do you have Invega Sustenna 234 mg in stock? Patient: Renee Delgado, DOB 04/12/1988.", at: "10:02 AM" }));
+      await wait(700);
+      say("Her injection is tomorrow morning, so Kim turns on Urgent.");
+      await compose("Her injection appointment is tomorrow 9 AM. Can you deliver urgently?", true);
+      await post(as(KIM, { text: "Her injection appointment is tomorrow 9 AM. Can you deliver urgently?", urgent: true, at: "10:02 AM" }));
+      THREADS.s1.title = "Urgent · Invega Sustenna · R. Delgado"; THREADS.s1.tag = "Urgent"; THREADS.s1.strong = true; $("#ht").textContent = THREADS.s1.title; drawList(["s1", "r1", "r2"], "s1");
+      await wait(900); typing(); say("Carepak checks stock. Every reply shows who answered and how fast.");
+      await wait(1800);
+      await post(as(DANA, { text: "Yes, we have it in stock and reserved it for Renee. Starting an urgent delivery now.", replied: "48s", at: "10:03 AM" }));
+      speed("1 min 12 s");
+      pin("Who replied, their title, and how fast", 610, 470, "b");
+      await wait(2400); unpin();
+      say("One tidy box pinned at the top tracks the whole delivery.");
+      workflow("Urgent medication delivery", "Renee Delgado", ["In stock · reserved", "Patient notified", "Filled", "Shipped", "Expected delivery tomorrow", "Delivered"]);
+      THREADS.s1.chips = ["Urgent delivery · R. Delgado"]; drawList(["s1", "r1", "r2"], "s1");
+      await wait(900);
+      await stepDone(0, "Dana Park", "10:03 AM", false);
+      await stepDone(1, "Luis Ortega", "10:11 AM", "texted Renee and her caregiver");
+      say("Filled, then shipped: each step lights up green with the time and who did it.");
+      await stepDone(2, "Dana Park", "11:40 AM");
+      await stepDone(3, "Sam Rivera", "2:15 PM");
+      typing(); await wait(1100);
+      await post(as(SAM, { text: "On the way. Expected delivery tomorrow by 8 AM, before her appointment.", at: "2:16 PM" }));
+      await stepDone(4, "Sam Rivera", "2:16 PM", false);
+      say("Next morning: delivered. Mindify never had to call.");
+      await wait(1200);
+      line("Tuesday");
+      await stepDone(5, "Sam Rivera", "7:42 AM", "signed by caregiver");
+      setLight("s1", "ok"); THREADS.s1.tag = "Delivered"; THREADS.s1.strong = false; drawList(["s1", "r1", "r2"], "s1");
+      line('<span class="light ok"></span>Kim Ortiz marked all okay', "green");
+      pin("Green light: everything is okay. Both sides see it blink in their list.", 24, 168, "l");
+      await wait(4200); unpin();
+      say("Urgent delivery: answered in under a minute, tracked to the door, zero phone calls.");
+      await wait(3200);
+    } },
+    { name: "Story 2", run: async function () {
+      resetThreads(); THREADS.s1.title = "Urgent · Invega Sustenna · R. Delgado"; THREADS.s1.tag = "Delivered"; THREADS.s1.light = "ok";
+      app({ title: THREADS.s2.title });
+      drawList(["s2", "s1", "r1"], "s2");
+      say("Story 2 · A medication isn't covered by insurance.");
+      await wait(900);
+      await compose("Caplyta 42 mg was rejected: not covered. I just faxed over all of Marcus Okafor's information (DOB 09/30/1971).");
+      await post(as(KIM, { text: "Caplyta 42 mg was rejected: not covered. I just faxed over all of Marcus Okafor's information (DOB 09/30/1971).", at: "9:14 AM" }));
+      await wait(800); typing(); await wait(1500);
+      await post(as(LUIS, { text: "Got the fax, thank you. We'll put the prior authorization packet together.", replied: "1m 05s", at: "9:15 AM" }));
+      workflow("Prior authorization", "Marcus Okafor", ["Patient info received", "PA packet ready", "Prescriber signed & submitted", "Approved", "Filled", "Out for delivery", "Delivered"]);
+      THREADS.s2.chips = ["PA · M. Okafor"]; drawList(["s2", "s1", "r1"], "s2");
+      await stepDone(0, "Luis Ortega", "9:15 AM", false);
+      say("Carepak prepares the PA packet and attaches it right in the chat.");
+      typing(); await wait(1500);
+      await post(as(DANA, { text: "The PA packet is ready: chart notes, med history and the plan's form.", att: { name: "PA packet · M. Okafor.pdf", info: "14 pages · encrypted" }, at: "11:20 AM" }));
+      await stepDone(1, "Dana Park", "11:20 AM", false);
+      await wait(600);
+      say("This plan won't take it from the pharmacy, so Carepak flags it red.");
+      line('<span class="light issue still"></span><span><b>Dana Park flagged an issue:</b> We can\'t submit this PA from the pharmacy side. The plan needs the prescriber to sign and submit. Packet is attached.</span>', "issue");
+      setLight("s2", "issue"); issueBar("Plan needs the prescriber to sign and submit. Packet attached above.");
+      THREADS.s2.tag = "Issue"; THREADS.s2.strong = true; drawList(["s2", "s1", "r1"], "s2");
+      pin("Red light blinks for both sides until it's fixed", 24, 168, "l");
+      await wait(3600); unpin();
+      say("The clinic signs and submits, and attaches the signed form.");
+      await compose("Dr. Shah signed it and we submitted on the plan portal just now.");
+      await post(as(KIM, { text: "Dr. Shah signed it and we submitted on the plan portal just now.", att: { name: "Signed PA form · M. Okafor.pdf", info: "3 pages · encrypted" }, at: "1:05 PM" }));
+      await stepDone(2, "Kim Ortiz", "1:05 PM", false);
+      await wait(800);
+      say("Approved. The light turns green, then filled, out for delivery, delivered.");
+      line("Next day");
+      await stepDone(3, "Dana Park", "10:30 AM", "approved for 12 months");
+      setLight("s2", "ok"); THREADS.s2.tag = "Approved"; THREADS.s2.strong = false; drawList(["s2", "s1", "r1"], "s2");
+      line('<span class="light ok"></span>Dana Park marked all okay', "green");
+      await stepDone(4, "Luis Ortega", "12:10 PM");
+      await stepDone(5, "Sam Rivera", "2:40 PM");
+      await stepDone(6, "Sam Rivera", "4:05 PM", "delivered to patient's home");
+      THREADS.s2.tag = "Delivered"; drawList(["s2", "s1", "r1"], "s2");
+      say("Not covered → approved and delivered, with every document and step in one place.");
+      await wait(4200);
+    } },
+    { name: "Features", run: async function () {
+      stage.innerHTML = '<div class="slide"><span class="eyebrow">What you just saw</span><h2>Everything in one secure chat</h2>' +
+        '<div class="feat">' + [
+          ["One chat per request", "Titled, sorted by importance, marked resolved when done."],
+          ["Who answered, how fast", "Name, title and reply time on every message."],
+          ["Urgent", "Turn it on in any message. It moves to the top for Carepak."],
+          ["Workflows", "One box per patient. Each step lights up green with time and name."],
+          ["Green and red lights", "All okay, or an issue with what's wrong, for both sides."],
+          ["Encrypted attachments", "PA packets, signed forms, photos. No lost faxes."]
+        ].map(function (f, i) { return '<div style="animation-delay:' + (0.15 + i * 0.25) + 's"><b>' + f[0] + "</b>" + f[1] + "</div>"; }).join("") +
+        '</div><p class="fine" style="margin-top:22px">Each organization has its own sign-in page (carepakpharmacy.com/mindify) and every person has their own PIN. Every action is recorded.</p></div>';
+      say("Everything Mindify needs from the pharmacy, in one place.");
+      await wait(8000);
+    } },
+    { name: "BHI", run: async function () {
+      var rows = [
+        ["99484", "General BHI", "Care management, at least 20 min per month", "≈ $50–57", "per patient / month"],
+        ["99492", "Collaborative care, first month", "At least 70 min of care manager time", "≈ $160", "first month"],
+        ["99493", "Collaborative care, following months", "At least 60 min per month", "≈ $130–145", "per month"],
+        ["99494", "Collaborative care, extra time", "Each additional 30 min", "≈ $61–67", "add-on"]
+      ];
+      stage.innerHTML = '<div class="slide" style="justify-content:flex-start;padding-top:52px"><span class="eyebrow">Behavioral Health Integration (BHI)</span><h2>Monthly Medicare payment for each patient</h2>' +
+        '<div class="grid2"><div><table class="rates"><thead><tr><th>Code</th><th>Service</th><th>Approx. 2026 Medicare</th></tr></thead><tbody>' +
+        rows.map(function (r, i) { return '<tr style="animation-delay:' + (0.2 + i * 0.35) + 's"><td class="code">' + r[0] + "</td><td><b style=\"font-weight:600\">" + r[1] + '</b><br><span class="fine">' + r[2] + '</span></td><td class="amt">' + r[3] + '<br><span class="fine" style="font-weight:400">' + r[4] + "</span></td></tr>"; }).join("") +
+        '</tbody></table><div class="box" style="margin-top:16px;animation-delay:1.8s"><h3>Example: one patient, general BHI</h3><div class="big">≈ $600–680 / year</div><div class="fine">12 months × 99484. With collaborative care (99492 + 11 × 99493): ≈ $1,600–1,750 / year.</div></div></div>' +
+        '<div class="box" style="animation-delay:2.4s"><h3>Carepak can do the work, billed hourly</h3>' +
+        '<div class="flow"><div><span class="n">1</span><span>Carepak\'s clinical team does the monthly check-ins, medication follow-up and adherence calls for Mindify\'s BHI patients.</span></div>' +
+        '<div><span class="n">2</span><span>Time and notes are logged in the Carepak chat for each patient.</span></div>' +
+        '<div><span class="n">3</span><span>Mindify bills the BHI code under its general supervision.</span></div>' +
+        '<div><span class="n">4</span><span>Carepak bills Mindify for the hours worked.</span></div></div>' +
+        '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)"><div class="fine">Illustration</div><div style="font-size:15px">1 hour ≈ 3 patients × 20 min ≈ <b style="color:var(--accent)">$150–170</b> in monthly BHI billing for the practice.</div></div></div></div>' +
+        '<p class="fine" style="margin-top:14px">Approximate 2026 national Medicare non-facility amounts from published billing guides, rounded. Actual payment varies by location and payer. Check the CMS Physician Fee Schedule lookup for CY 2026. The practice bills. Confirm with a billing advisor and healthcare attorney before starting: who may provide the clinical staff time, required documentation and patient consent, and a fair-market-value hourly agreement not tied to referrals.</p></div>';
+      say("BHI: Medicare pays monthly per patient, and Carepak can do the care-management work, billed hourly.");
+      await wait(16000);
+    } },
+    { name: "BHI year", run: async function () {
+      var M = [
+        ["January", "Fresh start", "Set or reset care plan goals for the year; PHQ-9 and GAD-7 rescreen"],
+        ["February", "Sleep", "Sleep habits, naps, screen time, caffeine; how sleep affects mood and pain"],
+        ["March", "Medications", "Adherence, side effects, refills, pill organizers; any meds from other prescribers"],
+        ["April", "Stress and coping", "Identify stressors; teach one skill (breathing, grounding, journaling); quarterly PHQ-9/GAD-7"],
+        ["May", "Mental Health Awareness Month: connection", "Support system, loneliness, community or senior center resources, faith groups"],
+        ["June", "Movement and mood", "Walking, chair exercises, getting outdoors; heat safety with psych meds"],
+        ["July", "Alcohol and substances", "AUDIT-C or similar screen, alcohol-medication interactions, tobacco; quarterly rescreen"],
+        ["August", "Body–mind link", "How chronic conditions (pain, diabetes, heart, COPD) affect mood; nutrition and hydration"],
+        ["September", "Suicide Prevention Awareness Month", "Review or create a safety plan, ask about PHQ-9 item 9, share 988 Suicide & Crisis Lifeline"],
+        ["October", "Memory and planning", "Cognition concerns, routines, advance directives; Medicare open enrollment (Oct 15–Dec 7) benefits check; quarterly rescreen"],
+        ["November", "Grief, gratitude, caregiving", "Holiday-season grief, anniversaries of losses, caregiver strain, gratitude practice"],
+        ["December", "Winter mood and year review", "Seasonal mood dips, holiday stress, isolation; review progress and draft next year’s goals"]
+      ];
+      var now = new Date().getMonth();
+      stage.innerHTML = '<div class="slide" style="justify-content:flex-start;padding:44px 56px"><span class="eyebrow">BHI · Sample engagement plan</span><h2 style="font-size:30px;margin:6px 0 4px">A sample year of monthly check-ins</h2>' +
+        '<p class="fine" style="font-size:13.5px;margin:0">A starting point we arrange and plan together with Mindify. Each monthly BHI call gets a clear focus, and the themes can change to fit your patients.</p>' +
+        '<div class="months">' + M.map(function (m, i) {
+          return '<div class="mo' + (i === now ? " now" : "") + '" style="animation-delay:' + (0.15 + i * 0.12) + 's"><div class="mo-top"><span class="mo-name">' + esc(m[0]) + "</span>" + (i === now ? '<span class="mo-now">This month</span>' : "") + '</div><b>' + esc(m[1]) + "</b><span>" + esc(m[2]) + "</span></div>";
+        }).join("") + "</div>" +
+        '<div class="plan">' + [["Plan together", "Mindify and Carepak pick and adjust the monthly themes and which patients join."], ["Arrange the calls", "Carepak schedules and makes the monthly check-ins."], ["Keep it in one place", "Notes, screening scores and minutes go into each patient's Carepak chat."]].map(function (x, i) {
+          return '<div style="animation-delay:' + (1.8 + i * 0.3) + 's"><span class="n">' + (i + 1) + "</span><span><b>" + x[0] + "</b>" + x[1] + "</span></div>";
+        }).join("") + "</div></div>";
+      say("A sample monthly plan: we arrange and plan it together, and every call has a clear focus.");
+      await wait(15000);
+    } },
+    { name: "Coming: DME", run: async function () {
+      stage.innerHTML = '<div class="slide"><span class="eyebrow">Coming in 2027</span><h1>DME, in the same chat</h1><p class="lead">Order, track and confirm durable medical equipment for Mindify\'s patients the same way: one request, one box, every step lit up.</p>' +
+        '<div class="dme">' + [["Request", "Order equipment for a patient in the chat."], ["Paperwork", "Orders, notes and proof of delivery as encrypted attachments."], ["Track", "Ordered → approved → shipped → delivered."], ["Green / red", "Problems flagged red until they're fixed."]].map(function (d, i) { return '<div style="animation-delay:' + (0.3 + i * 0.3) + 's"><b>' + d[0] + "</b>" + d[1] + "</div>"; }).join("") +
+        "</div></div>";
+      say("Coming next year: DME products, with the same simple tracking.");
+      await wait(7000);
+    } },
+    { name: "Close", run: async function () {
+      stage.innerHTML = '<div class="slide" style="align-items:center;text-align:center">' + LOGO + '<h1 style="margin-top:22px">Care, connected.</h1><p class="lead">A direct line to the people in their care.</p>' +
+        '<p class="fine" style="margin-top:28px">carepakpharmacy.com · 1.800.601.7092 · Demo with fictional staff and patients.</p></div>';
+      say("Carepak: less phone tag, more care.");
+      await wait(6000);
+    } }
+  ];
+
+  // ---------- player ----------
+  var dots = $("#dots");
+  dots.innerHTML = SCENES.map(function (s, i) { return '<button class="dot" data-i="' + i + '" aria-label="Scene ' + (i + 1) + ': ' + s.name + '"><i></i></button>'; }).join("");
+  Array.prototype.forEach.call(dots.children, function (d) { d.onclick = function () { go(+d.getAttribute("data-i")); }; });
+  var EST = [5500, 52000, 50000, 8000, 16000, 15000, 7000, 6000];
+  function drawDots() {
+    Array.prototype.forEach.call(dots.children, function (d, i) {
+      d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
+      d.firstChild.style.width = i === scene ? Math.min(100, sceneElapsed * SPEED / EST[i] * 100) + "%" : "0";
+    });
+  }
+  setInterval(drawDots, 200);
+  async function go(i) {
+    if (i < 0) i = 0;
+    if (i >= SCENES.length) { scene = SCENES.length - 1; drawDots(); return; }
+    token++; scene = i; sceneElapsed = 0; WF = null; drawDots();
+    var t = token;
+    try { await SCENES[i].run(); } catch (e) { if (e !== "cancel") throw e; return; }
+    if (t === token) go(i + 1);
+  }
+  function setPaused(p) { paused = p; $("#play").textContent = p ? "Play" : "Pause"; $("#play").setAttribute("aria-label", p ? "Play" : "Pause"); }
+  $("#play").onclick = function () { if (scene === SCENES.length - 1 && sceneElapsed * SPEED >= EST[scene]) { setPaused(false); return go(0); } setPaused(!paused); };
+  $("#next").onclick = function () { go(scene + 1); };
+  $("#prev").onclick = function () { go(scene - 1); };
+  $("#restart").onclick = function () { setPaused(false); go(0); };
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " ") { e.preventDefault(); $("#play").click(); }
+    if (e.key === "ArrowRight") go(scene + 1);
+    if (e.key === "ArrowLeft") go(scene - 1);
+  });
+  go(0);
+})();
+</script>
+</body>
+</html>
