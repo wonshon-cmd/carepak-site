@@ -171,6 +171,17 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
 .ahead div{border:1px dashed #BFD9E6;border-radius:12px;padding:8px 12px;font-size:12px;color:var(--muted);opacity:0;animation:fade .5s forwards}
 .ahead b{display:block;color:var(--ink);font-weight:600;font-size:13px}
 .ahead .lbl{border:0;padding:8px 4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);max-width:130px}
+.medtab{align-self:flex-start;width:78%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;animation:pop .35s ease-out}
+.mt-head{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;margin-bottom:6px}
+.mt-head .ic{grid-row:span 2;width:26px;height:32px;border-radius:4px;background:#F1D9D5;color:#9B3A2F;font-size:9px;font-weight:700;display:grid;place-items:center}
+.mt-head b{font-size:13.5px;font-weight:600}.mt-head small{font-size:11px;color:var(--muted)}
+.medtab table{width:100%;border-collapse:collapse;font-size:12px}
+.medtab th{text-align:left;font-weight:500;color:var(--muted);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line);padding:3px 6px}
+.medtab td{padding:4px 6px;border-bottom:1px solid #EEF3F6}
+.medtab td.rd{white-space:nowrap;font-weight:600;color:#8A5A2B;transition:all .3s}
+.medtab td.rd.synced{color:var(--accent);background:var(--soft)}
+.mt-foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:11.5px;color:var(--muted)}
+.mt-foot b{color:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>
@@ -307,6 +318,16 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   function unpin() { var p = $("#pin"); if (p) p.classList.remove("show"); }
   function speed(text) { var s = $("#speed"); s.style.display = "block"; s.innerHTML = "Carepak average reply<b>" + esc(text) + "</b>"; }
 
+  var MEDS = [["Lisinopril 20 mg", "1 tablet daily", "Nov 3"], ["Metformin 1000 mg", "1 tablet twice daily", "Nov 7"], ["Atorvastatin 40 mg", "1 tablet at bedtime", "Nov 12"],
+    ["Sertraline 100 mg", "1 tablet daily", "Nov 19"], ["Levothyroxine 75 mcg", "1 tablet every morning", "Nov 22"], ["Aripiprazole 5 mg", "1 tablet daily", "Nov 27"]];
+  function medTable() {
+    var d = document.createElement("div"); d.className = "medtab";
+    d.innerHTML = '<div class="mt-head"><span class="ic">PDF</span><b>Reconciled medication list · Alicia Brooks</b><small>Reviewed by Dana Park, PharmD · 6 medications · no duplicates · no interactions found</small></div>' +
+      "<table><thead><tr><th>Medication</th><th>Directions</th><th>Next refill</th></tr></thead><tbody>" +
+      MEDS.map(function (m) { return "<tr><td>" + esc(m[0]) + "</td><td>" + esc(m[1]) + '</td><td class="rd">' + esc(m[2]) + "</td></tr>"; }).join("") +
+      '</tbody></table><div class="mt-foot"><span id="mtNote">Refill dates: <b style="color:#8A5A2B">6 different days</b></span><span>Encrypted</span></div>';
+    $("#msgs").appendChild(d); scrollMsgs(); return d;
+  }
   var KIM = { who: "Kim Ortiz", role: "Care Coordinator", org: "Mindify", out: true };
   var DANA = { who: "Dana Park, PharmD", role: "Pharmacist", org: "Carepak Pharmacy" };
   var LUIS = { who: "Luis Ortega", role: "Pharmacy Technician", org: "Carepak Pharmacy" };
@@ -323,7 +344,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var SCENES = [
     { name: "Intro", run: async function () {
       stage.innerHTML = '<div class="slide">' + LOGO + '<h1>Mindify × Carepak Pharmacy</h1><p class="lead">A sample Mindify account with Carepak: one secure chat with the pharmacy for every request. No phone tag, no hold music, no lost faxes.</p>' +
-        '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
+        '<p style="margin-top:26px"><span class="pill">Story 1 · Urgent delivery</span><span class="pill">Story 2 · Not covered → PA</span><span class="pill">Story 3 · One refill, all at once</span><span class="pill">BHI + monthly calendar</span><span class="pill">Coming 2027: DME</span></p>' +
         '<p class="fine" style="margin-top:30px">Demo with fictional staff and patients. Signed in as Kim Ortiz, Care Coordinator at Mindify (carepakpharmacy.com/mindify).</p></div>';
       say("A sample Mindify account: what working with Carepak looks like.");
       await wait(5500);
@@ -410,6 +431,50 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       THREADS.s2.tag = "Delivered"; drawList(["s2", "s1", "r1"], "s2");
       say("Not covered → approved and delivered, with every document and step in one place.");
       await wait(4200);
+    } },
+    { name: "Story 3", run: async function () {
+      resetThreads(); THREADS.s1.title = "Urgent · Invega Sustenna · R. Delgado"; THREADS.s1.tag = "Delivered"; THREADS.s1.light = "ok";
+      THREADS.s2.title = "PA · Caplyta 42 mg · M. Okafor"; THREADS.s2.tag = "Delivered"; THREADS.s2.light = "ok";
+      THREADS.r1 = { title: "Med rec + synced refills · A. Brooks", sub: "Carepak Pharmacy", chips: [] };
+      app({ title: THREADS.r1.title });
+      drawList(["r1", "s2", "s1"], "r1");
+      say("Story 3 · Six medications, six different refill days. Mindify's staff handles a refill request almost every week.");
+      await wait(900);
+      await compose("Alicia Brooks (DOB 02/14/1956) has 6 meds refilling on different days. Our staff gets refill requests for her all month. Can you help?");
+      await post(as(KIM, { text: "Alicia Brooks (DOB 02/14/1956) has 6 meds refilling on different days. Our staff gets refill requests for her all month. Can you help?", at: "9:05 AM" }));
+      await wait(600); typing(); await wait(1500);
+      await post(as(DANA, { text: "Yes. We reconciled all of her medications into one list, checked for duplicates and interactions, and will sync every refill date.", replied: "52s", at: "9:06 AM" }));
+      workflow("Synced refills · one refill at once", "Alicia Brooks", ["Medications reconciled", "Refill dates synced", "One refill request sent", "Provider approved all at once", "Filled & packed together", "Refill appointment coordinated"]);
+      THREADS.r1.chips = ["Synced refills · A. Brooks"]; drawList(["r1", "s2", "s1"], "r1");
+      say("Carepak shares one reconciled medication list right in the chat.");
+      var mt = medTable();
+      await stepDone(0, "Dana Park", "9:20 AM", false);
+      await wait(1800);
+      say("Every refill date moves to the same day: one refill, all at once.");
+      var cells = mt.querySelectorAll("td.rd");
+      for (var i = 0; i < cells.length; i++) { cells[i].textContent = "Nov 15"; cells[i].classList.add("synced"); await wait(450); }
+      $("#mtNote").innerHTML = "Refill dates: <b>all on the 15th</b> · one refill per month";
+      pin("6 refill dates → 1. No more scattered requests.", 470, 540, "b");
+      await stepDone(1, "Dana Park", "9:24 AM", false);
+      await wait(1600); unpin();
+      say("One refill request for all six medications. The provider approves it once.");
+      typing(); await wait(1100);
+      await post(as(LUIS, { text: "We sent Dr. Shah one refill request covering all 6 medications for the 15th.", at: "9:30 AM" }));
+      await stepDone(2, "Luis Ortega", "9:30 AM", false);
+      await compose("Dr. Shah approved all 6 in one signature. So much easier for our clinical staff.");
+      await post(as(KIM, { text: "Dr. Shah approved all 6 in one signature. So much easier for our clinical staff.", at: "11:02 AM" }));
+      await stepDone(3, "Kim Ortiz", "11:02 AM", "one approval for 6 medications");
+      await stepDone(4, "Dana Park", "Nov 14", "packed by day and time, one delivery");
+      say("Carepak also lines up the follow-up visit before the next refill is due.");
+      typing(); await wait(1200);
+      await post(as(LUIS, { text: "Her 90-day follow-up with Dr. Shah is due before the next refill. Want us to coordinate the appointment?", at: "11:10 AM" }));
+      await compose("Yes please. Dec 10 at 2 PM works for her.");
+      await post(as(KIM, { text: "Yes please. Dec 10 at 2 PM works for her.", at: "11:14 AM" }));
+      await stepDone(5, "Luis Ortega", "11:16 AM", "Dec 10, 2:00 PM · patient and caregiver texted");
+      setLight("r1", "ok"); THREADS.r1.tag = "Synced"; drawList(["r1", "s2", "s1"], "r1");
+      line('<span class="light ok"></span>Kim Ortiz marked all okay', "green");
+      say("One reconciled list. One refill, all at once. No confusion for providers, less work for clinical staff.");
+      await wait(4500);
     } },
     { name: "Features", run: async function () {
       stage.innerHTML = '<div class="slide"><span class="eyebrow">What you just saw</span><h2>Everything in one secure chat</h2>' +
@@ -516,7 +581,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var dots = $("#dots");
   dots.innerHTML = SCENES.map(function (s, i) { return '<button class="dot" data-i="' + i + '" aria-label="Scene ' + (i + 1) + ': ' + s.name + '"><i></i></button>'; }).join("");
   Array.prototype.forEach.call(dots.children, function (d) { d.onclick = function () { go(+d.getAttribute("data-i")); }; });
-  var EST = [5500, 52000, 50000, 8000, 16000, 15000, 18000, 7000, 6000];
+  var EST = [5500, 52000, 50000, 52000, 8000, 16000, 15000, 18000, 7000, 6000];
   function drawDots() {
     Array.prototype.forEach.call(dots.children, function (d, i) {
       d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
