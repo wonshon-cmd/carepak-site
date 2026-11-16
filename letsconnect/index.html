@@ -22,7 +22,7 @@
 'use strict';
 // endpoint comes from assets/config.js (Google Apps Script web app URL).
 // Personal codes that work without the server (case and dashes ignored).
-const PERSONAL_CODES={'dane9ay6':{organization:'Dane',name:'Dane'}};
+const PERSONAL_CODES={'dane9ay6':{organization:'Dane',name:'Dane'},'allhealth':{organization:'AllHealth'}};
 const CONFIG={accessCode:'mindifyusa',organization:'Mindify',endpoint:window.CAREPAK_ENDPOINT||'',phone:'1.800.601.7092'};
 const services=[
 {id:'pa',name:'STAT prior authorization assistance',short:'Time-sensitive coordination of plan requirements and supporting information with the prescribing office, with ongoing, up-to-date status updates for providers, patients and caregivers.'},
@@ -37,7 +37,7 @@ const services=[
 ];
 const future=[{id:'bhi',name:'Behavioral health integration · In development'},{id:'ccm',name:'Chronic care management · In development'},{id:'rpm',name:'Remote patient monitoring · In development'}];
 const $=id=>document.getElementById(id);let authorized=false;const selected=new Set();const profile={};
-function show(id){const req=id.startsWith('req');if(id!=='entry'&&!req&&!authorized)return;document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!==id);$('exit').hidden=id==='entry';$('headerCaption').textContent=id==='entry'?'Patient care is our priority.':req?'Request access':'Carepak × '+CONFIG.organization;document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('active',i===(id==='entry'||id==='welcome'||req?0:id==='services'?1:2)));if(id==='services')$('personalGreeting').textContent='Welcome, '+profile.name;if(id==='feedback')renderChoices();if(id==='presentation'&&!$('presFrame').src)$('presFrame').src='presentation/?v=202611111940';window.scrollTo(0,0);const h=$(id).querySelector('h1');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
+function show(id){const req=id.startsWith('req');if(id!=='entry'&&!req&&!authorized)return;document.querySelectorAll('.view').forEach(x=>x.hidden=x.id!==id);$('exit').hidden=id==='entry';$('headerCaption').textContent=id==='entry'?'Patient care is our priority.':req?'Request access':'Carepak × '+CONFIG.organization;document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('active',i===(id==='entry'||id==='welcome'||req?0:id==='services'?1:2)));if(id==='services')$('personalGreeting').textContent='Welcome, '+profile.name;if(id==='feedback')renderChoices();if(id==='presentation'&&!$('presFrame').src)$('presFrame').src='presentation/?v=202611111940&org='+encodeURIComponent(CONFIG.organization);window.scrollTo(0,0);const h=$(id).querySelector('h1');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
 // Personal access codes (CP-XXXXXX) issued by Carepak from the dashboard are checked by the server.
 function personalize(org){CONFIG.organization=org;document.querySelectorAll('.eyebrow').forEach(e=>{if(e.textContent.includes('Mindify'))e.textContent='Carepak × '+org});const w=document.querySelector('#welcome h1 em');if(w)w.textContent=org+'.'}
 $('codeForm').onsubmit=async e=>{e.preventDefault();const raw=$('code').value.trim();
@@ -55,7 +55,7 @@ authorized=true;window.carepakTrack&&carepakTrack('Entered access code');$('code
 $('profileForm').onsubmit=e=>{e.preventDefault();for(const key of ['name','title','email']){if(!$(key).value.trim()){$(key).setCustomValidity('Please enter your '+key+'.');$(key).reportValidity();return}profile[key]=$(key).value.trim()}show('services')};
 ['name','title','email'].forEach(key=>$(key).oninput=()=>$(key).setCustomValidity(''));
 $('presFrame').addEventListener('load',()=>{try{const w=$('presFrame').contentWindow;let y=scrollY;const keep=()=>{y=scrollY};w.document.addEventListener('click',keep,true);w.document.addEventListener('keydown',keep,true);w.document.addEventListener('touchstart',keep,{capture:true,passive:true});w.addEventListener('hashchange',()=>{scrollTo(0,y);const m=$('main');m.scrollTop=0;m.scrollLeft=0;const fr=$('presFrame').parentElement;fr.scrollTop=0;fr.scrollLeft=0})}catch(e){}});
-document.querySelectorAll('[data-pres]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-pres]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));$('presFrame').src=b.dataset.pres});
+document.querySelectorAll('[data-pres]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-pres]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));$('presFrame').src=b.dataset.pres+(b.dataset.pres.startsWith('presentation')?'&org='+encodeURIComponent(CONFIG.organization):'')});
 $('presFull').onclick=()=>{const f=$('presFrame'),req=f.requestFullscreen||f.webkitRequestFullscreen;if(req&&(document.fullscreenEnabled||document.webkitFullscreenEnabled)){const r=req.call(f);if(r&&r.catch)r.catch(()=>window.open($('presFrame').getAttribute('src'),'_blank'))}else window.open($('presFrame').getAttribute('src'),'_blank')};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));
 // ---- Request an access code: email -> verify -> name -> company -> title & phone -> submit ----

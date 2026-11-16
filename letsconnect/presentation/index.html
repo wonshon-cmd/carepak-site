@@ -682,6 +682,17 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   };
   document.addEventListener("fullscreenchange", fsLabel); document.addEventListener("webkitfullscreenchange", fsLabel);
   document.addEventListener("keydown", function (e) { if (e.key === "f" || e.key === "F") fsBtn.click(); });
+  // ---- partner name: the demo is written for Mindify; ?org=Name shows another partner's name everywhere ----
+  var ORG = (new URLSearchParams(location.search).get("org") || "").trim().slice(0, 40);
+  if (ORG && ORG.toLowerCase() !== "mindify") {
+    var slug = ORG.toLowerCase().replace(/[^a-z0-9]+/g, "");
+    var swap = function () {
+      var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
+      while ((n = w.nextNode())) { var v = n.nodeValue; if (/mindify/i.test(v)) n.nodeValue = v.replace(/Mindify/g, ORG).replace(/mindify/g, slug).replace(/MINDIFY/g, ORG.toUpperCase()); }
+    };
+    new MutationObserver(swap).observe(document.body, { childList: true, subtree: true, characterData: true });
+    swap(); document.title = document.title.replace(/Mindify/g, ORG);
+  }
   go(0);
 })();
 </script>
