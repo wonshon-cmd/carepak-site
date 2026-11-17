@@ -234,6 +234,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     <button class="cbtn" id="next" aria-label="Next scene">▶</button>
     <div class="dots" id="dots"></div>
     <button class="cbtn" id="restart">Restart</button>
+    <button class="cbtn" id="spd" aria-label="Playback speed">Speed 1.25×</button>
     <button class="cbtn fs" id="fs" aria-label="Full screen">⤢ Full screen</button>
   </div>
 </div>
@@ -243,7 +244,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var stage = $("#stage"), cap = $("#cap");
   var token = 0, paused = false, scene = 0, sceneStart = 0, sceneElapsed = 0;
-  var SPEED = 2; // play twice as fast
+  var SPEEDS = [1, 1.25, 1.5, 2], SPEED = 1.25; // viewers can change it with the Speed button
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ---- fit the 1280x720 stage to the window ----
@@ -669,6 +670,11 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     if (e.key === "ArrowRight") go(scene + 1);
     if (e.key === "ArrowLeft") go(scene - 1);
   });
+  // ---- playback speed ----
+  $("#spd").onclick = function () {
+    SPEED = SPEEDS[(SPEEDS.indexOf(SPEED) + 1) % SPEEDS.length];
+    this.textContent = "Speed " + SPEED + "×";
+  };
   // ---- full screen (falls back to opening this page on its own, e.g. on iPhone) ----
   var root = document.documentElement, fsBtn = $("#fs");
   function isFs() { return document.fullscreenElement || document.webkitFullscreenElement; }
