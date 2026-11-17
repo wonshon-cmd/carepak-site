@@ -234,7 +234,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
     <button class="cbtn" id="next" aria-label="Next scene">▶</button>
     <div class="dots" id="dots"></div>
     <button class="cbtn" id="restart">Restart</button>
-    <button class="cbtn" id="spd" aria-label="Playback speed">Speed 1.25×</button>
+    <button class="cbtn" id="spd" aria-label="Playback speed">Speed 1×</button>
     <button class="cbtn fs" id="fs" aria-label="Full screen">⤢ Full screen</button>
   </div>
 </div>
@@ -244,7 +244,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var stage = $("#stage"), cap = $("#cap");
   var token = 0, paused = false, scene = 0, sceneStart = 0, sceneElapsed = 0;
-  var SPEEDS = [1, 1.25, 1.5, 2], SPEED = 1.25; // viewers can change it with the Speed button
+  var FACTORS = [0.75, 1, 1.25], FACTOR = 1, SCENE_BASE = 1.5; // chat stories play at 2x, other slides at 1.5x; the Speed button scales both
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ---- fit the 1280x720 stage to the window ----
@@ -258,7 +258,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   function wait(ms) {
     var t = token;
     return new Promise(function (res, rej) {
-      var left = ms / SPEED, last = performance.now();
+      var left = ms / (SCENE_BASE * FACTOR), last = performance.now();
       (function tick() {
         if (t !== token) return rej("cancel");
         var now = performance.now();
@@ -390,7 +390,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       say("A sample Mindify account: what working with Carepak looks like.");
       await wait(5500);
     } },
-    { name: "Story 1", run: async function () {
+    { name: "Story 1", fast: true, run: async function () {
       resetThreads();
       app({ title: THREADS.s1.title });
       drawList(["s1", "r1", "r2"], "s1");
@@ -432,7 +432,7 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
       say("Urgent delivery: answered in under a minute, tracked to the door, zero phone calls.");
       await wait(3200);
     } },
-    { name: "Story 2", run: async function () {
+    { name: "Story 2", fast: true, run: async function () {
       resetThreads(); THREADS.s1.title = "Urgent · Invega Sustenna · R. Delgado"; THREADS.s1.tag = "Delivered"; THREADS.s1.light = "ok";
       app({ title: THREADS.s2.title });
       drawList(["s2", "s1", "r1"], "s2");
@@ -648,20 +648,20 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   function drawDots() {
     Array.prototype.forEach.call(dots.children, function (d, i) {
       d.className = "dot" + (i < scene ? " done" : i === scene ? " on" : "");
-      d.firstChild.style.width = i === scene ? Math.min(100, sceneElapsed * SPEED / EST[i] * 100) + "%" : "0";
+      d.firstChild.style.width = i === scene ? Math.min(100, sceneElapsed * SCENE_BASE * FACTOR / EST[i] * 100) + "%" : "0";
     });
   }
   setInterval(drawDots, 200);
   async function go(i) {
     if (i < 0) i = 0;
     if (i >= SCENES.length) { scene = SCENES.length - 1; drawDots(); return; }
-    token++; scene = i; sceneElapsed = 0; WF = null; drawDots();
+    token++; scene = i; sceneElapsed = 0; WF = null; SCENE_BASE = SCENES[i].fast ? 2 : 1.5; drawDots();
     var t = token;
     try { await SCENES[i].run(); } catch (e) { if (e !== "cancel") throw e; return; }
     if (t === token) go(i + 1);
   }
   function setPaused(p) { paused = p; $("#play").textContent = p ? "Play" : "Pause"; $("#play").setAttribute("aria-label", p ? "Play" : "Pause"); }
-  $("#play").onclick = function () { if (scene === SCENES.length - 1 && sceneElapsed * SPEED >= EST[scene]) { setPaused(false); return go(0); } setPaused(!paused); };
+  $("#play").onclick = function () { if (scene === SCENES.length - 1 && sceneElapsed * SCENE_BASE * FACTOR >= EST[scene]) { setPaused(false); return go(0); } setPaused(!paused); };
   $("#next").onclick = function () { go(scene + 1); };
   $("#prev").onclick = function () { go(scene - 1); };
   $("#restart").onclick = function () { setPaused(false); go(0); };
@@ -672,8 +672,8 @@ table.rates{width:100%;border-collapse:collapse;font-size:15px}
   });
   // ---- playback speed ----
   $("#spd").onclick = function () {
-    SPEED = SPEEDS[(SPEEDS.indexOf(SPEED) + 1) % SPEEDS.length];
-    this.textContent = "Speed " + SPEED + "×";
+    FACTOR = FACTORS[(FACTORS.indexOf(FACTOR) + 1) % FACTORS.length];
+    this.textContent = "Speed " + FACTOR + "×";
   };
   // ---- full screen (falls back to opening this page on its own, e.g. on iPhone) ----
   var root = document.documentElement, fsBtn = $("#fs");
