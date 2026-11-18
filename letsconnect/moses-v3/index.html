@@ -1,0 +1,256 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Carepak × Moses · Why patients stay</title>
+<style>
+:root{--blue:#039edc;--deep:#087faa;--ink:#14232d;--muted:#63717b;--wash:#eaf6fc;--line:#d9e4e9;--ok:#2fa36b}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#eef6fa;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--ink)}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2vh}
+.stage{position:relative;width:min(92vw,145vh);aspect-ratio:16/9;background:#fff;border-radius:1.4vw;box-shadow:0 1vw 3vw rgba(20,38,49,.1);overflow:hidden;container-type:inline-size}
+:fullscreen .stage{width:min(86vw,136vh)}
+.stage:after{content:'';position:absolute;width:60cqw;height:60cqw;right:-38cqw;bottom:-44cqw;border:.25cqw solid #28b6ee;border-radius:50%;box-shadow:0 0 0 2cqw #fff,0 0 0 2.25cqw #b7e8fb;pointer-events:none;z-index:0}
+.slide{position:absolute;z-index:1;inset:0;padding:4.2cqw 5.5cqw;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transition:opacity .6s}
+.slide.on{opacity:1;visibility:visible}
+.a{opacity:0;transform:translateY(1cqw);transition:opacity .6s,transform .6s}
+.slide.on .a{opacity:1;transform:none}
+.logo{font-size:1.7cqw;font-weight:700;letter-spacing:-.05cqw}.logo b{color:var(--blue);font-weight:400}.logo small{font-weight:500;color:var(--muted);font-size:1cqw;margin-left:.4cqw}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2.2cqw}
+.k{font-size:1.05cqw;font-weight:700;letter-spacing:.18em;color:var(--deep);text-transform:uppercase}
+h1{font-size:4.6cqw;line-height:1.04;font-weight:500;letter-spacing:-.18cqw;margin:.6cqw 0 1.4cqw}
+h2{font-size:3.4cqw;line-height:1.08;font-weight:500;letter-spacing:-.12cqw;margin:.5cqw 0 1.6cqw}
+em{font-style:normal;color:var(--blue)}
+.lead{font-size:1.7cqw;color:var(--muted);margin:0;max-width:62cqw;line-height:1.45}
+.num{display:inline-grid;place-items:center;width:2.6cqw;height:2.6cqw;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:1.3cqw;margin-right:1cqw;vertical-align:.3cqw}
+/* slide 1 */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;margin-top:2.4cqw}
+.pill{background:var(--wash);border-radius:1.2cqw;padding:1.6cqw 1.8cqw}
+.pill i{font-style:normal;font-size:2.4cqw}.pill b{display:block;font-size:1.75cqw;margin:.6cqw 0 .3cqw}.pill span{font-size:1.2cqw;color:var(--muted)}
+.love{margin-top:2.2cqw;font-size:2.2cqw;font-weight:600}.love em{font-weight:700}
+/* slide 2 */
+.stat{display:grid;grid-template-columns:auto 1fr;gap:4cqw;align-items:center;margin-top:1cqw}
+.big{font-size:15cqw;line-height:.9;font-weight:600;letter-spacing:-.6cqw;color:var(--blue)}.big small{font-size:6cqw}
+.why{font-size:1.45cqw;color:var(--muted);line-height:1.5}
+.why b{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:.7cqw;margin-top:1.2cqw}
+.chip{background:var(--wash);color:var(--deep);border-radius:99cqw;padding:.5cqw 1.1cqw;font-size:1.15cqw;font-weight:600}
+.behind{margin-top:2.6cqw;display:flex;flex-wrap:wrap;gap:.8cqw;align-items:center;font-size:1.25cqw}
+.behind span{border:.1cqw solid var(--line);border-radius:.8cqw;padding:.6cqw 1cqw;background:#fff}
+.behind b{font-size:1.9cqw;margin-left:1cqw}
+/* slide 3 */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:2.4cqw;align-items:stretch;margin-top:.6cqw}
+.side{border-radius:1.4cqw;padding:1.8cqw 2cqw}
+.side.bad{background:#fbf3f1;border:.1cqw solid #f1d5d0}.side.good{background:#edf8f3;border:.15cqw solid #9fdcbd}
+.side h3{margin:0 0 1cqw;font-size:1.9cqw}.side.bad h3{color:#a3372d}.side.good h3{color:#1f6e45}
+.side ul{margin:0;padding:0;list-style:none;font-size:1.45cqw;line-height:1.85}
+.side.bad li:before{content:'✕ ';color:#c8453b;font-weight:700}.side.good li:before{content:'✓ ';color:var(--ok);font-weight:700}
+.arrowR{align-self:center;font-size:4cqw;color:var(--blue)}
+.result{margin-top:1.6cqw;font-size:2.1cqw;font-weight:600;text-align:center}
+/* slide 4 */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:1cqw;margin-top:.2cqw}
+.st{position:relative;background:#fff;border:.12cqw solid var(--line);border-radius:1.1cqw;padding:1.1cqw 1.2cqw;font-size:1.15cqw;color:var(--muted);line-height:1.4}
+.st b{display:block;color:var(--ink);font-size:1.4cqw;margin:.4cqw 0 .3cqw;line-height:1.2}
+.st .n{font-size:1cqw;font-weight:700;color:var(--blue);letter-spacing:.08em}
+.st.hot{border-color:var(--blue);background:var(--wash)}
+.st:not(:nth-child(4n)):after{content:'→';position:absolute;right:-1.05cqw;top:50%;transform:translateY(-50%);color:var(--blue);font-size:1.4cqw;font-weight:700}
+.note{margin-top:1.6cqw;display:flex;gap:1.2cqw}
+.note span{flex:1;background:var(--wash);border-radius:1cqw;padding:1cqw 1.3cqw;font-size:1.25cqw;color:var(--ink)}
+.note b{color:var(--deep)}
+/* slide 5 */
+.cpa{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw;margin-top:.6cqw}
+.c{border:.12cqw solid var(--line);border-radius:1.3cqw;padding:1.8cqw;background:#fff}
+.c i{font-style:normal;font-size:2.6cqw}.c b{display:block;font-size:1.8cqw;margin:.7cqw 0 .4cqw}.c span{font-size:1.3cqw;color:var(--muted);line-height:1.45}
+.c.hot{border:.18cqw dashed var(--deep);background:#f4fafd}
+/* slide 6 */
+.life{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:1.2cqw 0 2.2cqw;position:relative}
+.life:before{content:'';position:absolute;left:6%;right:6%;top:2.2cqw;height:.3cqw;background:linear-gradient(90deg,var(--line),var(--blue))}
+.lp{text-align:center;padding:0 1cqw;position:relative}
+.lp .d{width:4.4cqw;height:4.4cqw;margin:0 auto 1cqw;border-radius:50%;background:#fff;border:.3cqw solid var(--blue);display:grid;place-items:center;font-size:1.9cqw}
+.lp:last-child .d{background:var(--blue);color:#fff}
+.lp b{display:block;font-size:1.6cqw;margin-bottom:.3cqw}.lp span{font-size:1.2cqw;color:var(--muted)}
+.close{display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:var(--ink);color:#fff;border-radius:1.4cqw;padding:1.8cqw 2.4cqw}
+.close h3{margin:0;font-size:2.5cqw;font-weight:500}.close h3 em{color:#7fd3f7}
+.cta{background:#fff;color:var(--deep);font-weight:800;letter-spacing:.06em;border-radius:.7cqw;padding:1cqw 1.6cqw;font-size:1.35cqw;white-space:nowrap}
+.close small{display:block;margin-top:.5cqw;color:#a9cfdf;font-size:1.2cqw}
+.fine{position:absolute;left:5.5cqw;bottom:2cqw;font-size:.95cqw;color:#8697a1}
+/* see it: packets, list, chat */
+.see{display:grid;grid-template-columns:1.35fr 1fr .95fr;gap:1.4cqw;margin-top:.4cqw;align-items:stretch}
+.box{position:relative;z-index:1;border:.1cqw solid var(--line);border-radius:1.1cqw;padding:1cqw 1.1cqw;background:#fbfdfe;display:flex;flex-direction:column}
+.box h4{margin:0 0 .7cqw;font-size:1.3cqw}.box h4 small{display:block;font-weight:500;color:var(--muted);font-size:.95cqw}
+.strip{display:flex;flex:1}
+.sp{flex:1;background:linear-gradient(180deg,#f6fbfe,#e6f2f9);border-top:.1cqw solid #bcd3df;border-bottom:.1cqw solid #bcd3df;border-right:.1cqw dashed #8fb3c6;padding:.6cqw .55cqw .45cqw;display:flex;flex-direction:column;font-size:.86cqw;line-height:1.38;white-space:nowrap;box-shadow:inset 0 .25cqw 0 rgba(255,255,255,.9)}
+.sp:first-child{border-left:.1cqw solid #bcd3df;border-radius:.4cqw 0 0 .4cqw}.sp:last-child{border-right:.1cqw solid #bcd3df;border-radius:0 .4cqw .4cqw 0}
+.sp b{font-size:1cqw;letter-spacing:.03em}.sp .t{color:#56656e;font-size:.78cqw;margin-bottom:.35cqw;border-bottom:.08cqw solid #d5e4ec;padding-bottom:.25cqw}
+.pills{margin-top:auto;display:flex;flex-wrap:wrap;gap:.3cqw;padding:.35cqw;background:rgba(255,255,255,.7);border-radius:.3cqw}
+.pills i{width:1cqw;height:1cqw;border-radius:50%;border:.07cqw solid #c3d2da;display:inline-block}.pills i.r{width:1.6cqw;height:.75cqw;border-radius:.4cqw;margin-top:.12cqw}
+.doc{background:#fff;border:.08cqw solid #d4e1e8;box-shadow:0 .2cqw .6cqw rgba(20,38,49,.1);padding:.7cqw .8cqw;font-size:.82cqw;flex:1}
+.doc .dh{border-bottom:.15cqw solid var(--blue);padding-bottom:.25cqw;font-size:1cqw;white-space:nowrap}.doc .dh span{color:var(--blue)}
+.doc .dp{color:#7d95a2;font-size:.75cqw;margin:.3cqw 0}
+.doc table{width:100%;border-collapse:collapse}.doc th{text-align:left;color:#7d95a2;font-weight:600;font-size:.72cqw;border-bottom:.08cqw solid #e3edf2}
+.doc td{padding:.08cqw .1cqw;border-bottom:.07cqw solid #f0f4f6;white-space:nowrap}.doc td+td,.doc th+th{text-align:center;color:var(--blue);width:13%}
+.doc .ok{margin-top:.45cqw;font-size:.8cqw;color:#1f6e45;background:#edf8f3;border-radius:.35cqw;padding:.25cqw .5cqw;font-weight:600}
+.chatbox{position:relative;cursor:pointer}
+.hint{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;color:var(--deep);font-size:1.2cqw;font-weight:600;text-align:center;border:.12cqw dashed #9fd0e8;border-radius:.9cqw;background:#f4fafd;transition:opacity .3s}
+.hint i{font-style:normal;font-size:3.2cqw;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-.4cqw)}}
+.msgs{position:absolute;inset:4.6cqw 1.1cqw 1cqw;background:#fbfdfe;display:flex;flex-direction:column;gap:.45cqw;opacity:0;pointer-events:none;transition:opacity .35s}
+.chatbox:hover .msgs,.chatbox.open .msgs{opacity:1}.chatbox:hover .hint,.chatbox.open .hint{opacity:0}
+.coord{display:flex;align-items:center;gap:.6cqw;padding-bottom:.5cqw;border-bottom:.08cqw solid #e3edf2}
+.coord i{width:2.2cqw;height:2.2cqw;border-radius:50%;background:var(--blue);color:#fff;font-style:normal;font-weight:700;font-size:.9cqw;display:grid;place-items:center}
+.coord b{display:block;font-size:1cqw}.coord small{color:var(--muted);font-size:.78cqw}
+.m{max-width:94%}.m small{display:block;color:#7d95a2;font-size:.7cqw;margin:0 .2cqw .1cqw}
+.m p{margin:0;background:#f1f5f7;border-radius:.2cqw .7cqw .7cqw .7cqw;padding:.4cqw .6cqw;font-size:.88cqw;line-height:1.35}
+.m.out{align-self:flex-end}.m.out small{text-align:right}.m.out p{background:#e6f5fc;border-radius:.7cqw .2cqw .7cqw .7cqw}
+.cst{margin-top:auto;background:#edf8f3;color:#1f6e45;border-radius:.4cqw;padding:.35cqw .6cqw;font-size:.85cqw;font-weight:600}
+/* everything in one place */
+.all{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1cqw;margin-top:.4cqw}
+.all .c{padding:1.3cqw}.all .c b{font-size:1.5cqw}.all .c span{font-size:1.12cqw}
+.close.sm{margin-top:1.8cqw;padding:1.3cqw 2cqw}.close.sm h3{font-size:2cqw}
+/* controls */
+.bar{display:flex;align-items:center;gap:.8vw;font-size:max(12px,.9vw)}
+.bar button{border:1px solid #d3e1e8;background:#fff;border-radius:99px;padding:.45em 1.1em;font:inherit;color:#14232d;cursor:pointer}
+.bar button.fs{background:var(--deep);border-color:var(--deep);color:#fff}
+.dots{display:flex;gap:6px}.dots button{width:26px;height:6px;padding:0;border-radius:3px;background:#cfe1ea;border:0}
+.dots button.on{background:var(--blue)}
+@media (prefers-reduced-motion:reduce){.a,.slide{transition:none}}
+</style></head><body>
+<div class="stage" id="stage" role="region" aria-label="Carepak × Moses presentation" aria-live="polite">
+
+<section class="slide on">
+  <div class="top a"><div class="logo"><b>(</b>Carepak<b>)</b><small>Pharmacy</small></div><div class="k">Carepak × Moses</div></div>
+  <div class="k a" style="transition-delay:.2s">Who we are</div>
+  <h1 class="a" style="transition-delay:.4s">A pharmacy patients<br><em>never want to leave.</em></h1>
+  <div class="pillars">
+    <div class="pill a" style="transition-delay:.9s"><i>💊</i><b>Packaged medicine</b><span>Every dose packed by day and time.</span></div>
+    <div class="pill a" style="transition-delay:1.2s"><i>📋</i><b>Reconciled medications</b><span>One clear, up-to-date list for everyone.</span></div>
+    <div class="pill a" style="transition-delay:1.5s"><i>💬</i><b>Chat &amp; communication</b><span>A coordinator who answers and updates.</span></div>
+  </div>
+  <div class="love a" style="transition-delay:2.1s">No confusion for patients. <em>That's why they love us.</em></div>
+</section>
+
+<section class="slide">
+  <div class="k a">Patient retention</div>
+  <div class="stat">
+    <div class="big a" style="transition-delay:.3s"><span id="cnt">0</span><small>%+</small></div>
+    <div class="a" style="transition-delay:.6s">
+      <h2 style="margin:0 0 1cqw">Our patients <em>stay with us.</em></h2>
+      <div class="why">Over <b>95% retention</b>, and that count <b>includes</b> every patient we lost for reasons outside anyone's control:</div>
+      <div class="chips"><span class="chip">Passed away</span><span class="chip">Moved to another state</span><span class="chip">Admitted to rehab</span></div>
+    </div>
+  </div>
+  <div class="behind a" style="transition-delay:1.6s"><span>Syncing every refill</span><span>Reconciling every medication</span><span>Packaging every dose</span><span>Coordinating with every office</span><span>Delivering to the door</span><b>So much work behind the scenes. <em>But they love us.</em></b></div>
+</section>
+
+<section class="slide">
+  <div class="k a"><span class="num">1</span>Why it works</div>
+  <h2 class="a" style="transition-delay:.2s">Less confused patients <em>stay in care.</em></h2>
+  <div class="vs">
+    <div class="side bad a" style="transition-delay:.6s"><h3>Without Carepak</h3><ul><li>Bottles everywhere, which pill when?</li><li>Refills due on 6 different days</li><li>Calls to the doctor, the pharmacy, the plan</li><li>Missed doses, missed visits</li></ul></div>
+    <div class="arrowR a" style="transition-delay:1.1s">→</div>
+    <div class="side good a" style="transition-delay:1.4s"><h3>With Carepak</h3><ul><li>One packet per dose, clearly labeled</li><li>One reconciled list, one refill date</li><li>One coordinator to call or chat</li><li>Patients understand and keep coming back</li></ul></div>
+  </div>
+  <div class="result a" style="transition-delay:2s">No confusion → better adherence → <em>patients stay in care.</em><br><span style="font-size:1.55cqw;color:var(--muted);font-weight:500">It works best when we work together with providers.</span></div>
+</section>
+
+<section class="slide">
+  <div class="k a">See it for yourself</div>
+  <h2 class="a" style="transition-delay:.2s">Packaged, reconciled, <em>and always one message away.</em></h2>
+  <div class="see">
+    <div class="box a" style="transition-delay:.5s"><h4>Strip packaging<small>Every dose labeled by day and time</small></h4><div class="strip"><div class="sp"><b>BREAKFAST</b><span class="t">MON 11/16 · 8:00 AM</span>Lisinopril 20 mg<br>Metformin 1000 mg<br>Sertraline 100 mg<br>Levothyroxine 75 mcg<br>Omeprazole 20 mg<br>Aspirin 81 mg<br>Vitamin D3 1000 IU<div class="pills"><i class="" style="background:#ffffff"></i><i class="r" style="background:#f6d365"></i><i class="" style="background:#9fd3f0"></i><i class="" style="background:#f4a6a6"></i><i class="r" style="background:#c5b5f2"></i><i class="" style="background:#f6c28b"></i><i class="" style="background:#a8e0c4"></i></div></div><div class="sp"><b>LUNCH</b><span class="t">MON 11/16 · 12:00 PM</span>Gabapentin 300 mg<br>Buspirone 10 mg<br>Calcium + D 600 mg<br>Vitamin B12 1000 mcg<br>Folic acid 1 mg<br>Multivitamin 1 tab<div class="pills"><i class="" style="background:#f4a6a6"></i><i class="r" style="background:#c5b5f2"></i><i class="" style="background:#f6c28b"></i><i class="" style="background:#a8e0c4"></i><i class="r" style="background:#ffffff"></i><i class="" style="background:#ffffff"></i></div></div><div class="sp"><b>DINNER</b><span class="t">MON 11/16 · 6:00 PM</span>Metformin 1000 mg<br>Atorvastatin 40 mg<br>Aripiprazole 5 mg<br>Amlodipine 5 mg<br>Gabapentin 300 mg<br>Buspirone 10 mg<br>Melatonin 3 mg<div class="pills"><i class="" style="background:#f6c28b"></i><i class="" style="background:#a8e0c4"></i><i class="r" style="background:#ffffff"></i><i class="" style="background:#ffffff"></i><i class="" style="background:#f6d365"></i><i class="r" style="background:#9fd3f0"></i><i class="" style="background:#f4a6a6"></i></div></div></div></div>
+    <div class="box a" style="transition-delay:.9s"><h4>Reconciled medication list<small>Matches every packet</small></h4>
+      <div class="doc"><div class="dh"><span>(</span><b>Carepak</b><span>)</span> Medication reconciliation</div><div class="dp">James Walker · Dr. Patel (PCP) · reviewed by Carepak pharmacist</div>
+        <table><tr><th>Medication</th><th>B</th><th>L</th><th>D</th></tr><tr><td>Lisinopril 20 mg</td><td>●</td><td></td><td></td></tr><tr><td>Metformin 1000 mg</td><td>●</td><td></td><td>●</td></tr><tr><td>Sertraline 100 mg</td><td>●</td><td></td><td></td></tr><tr><td>Levothyroxine 75 mcg</td><td>●</td><td></td><td></td></tr><tr><td>Omeprazole 20 mg</td><td>●</td><td></td><td></td></tr><tr><td>Aspirin 81 mg</td><td>●</td><td></td><td></td></tr><tr><td>Vitamin D3 1000 IU</td><td>●</td><td></td><td></td></tr><tr><td>Gabapentin 300 mg</td><td></td><td>●</td><td>●</td></tr><tr><td>Buspirone 10 mg</td><td></td><td>●</td><td>●</td></tr><tr><td>Calcium + D 600 mg</td><td></td><td>●</td><td></td></tr><tr><td>Vitamin B12 1000 mcg</td><td></td><td>●</td><td></td></tr><tr><td>Folic acid 1 mg</td><td></td><td>●</td><td></td></tr><tr><td>Multivitamin 1 tab</td><td></td><td>●</td><td></td></tr><tr><td>Atorvastatin 40 mg</td><td></td><td></td><td>●</td></tr><tr><td>Aripiprazole 5 mg</td><td></td><td></td><td>●</td></tr><tr><td>Amlodipine 5 mg</td><td></td><td></td><td>●</td></tr><tr><td>Melatonin 3 mg</td><td></td><td></td><td>●</td></tr></table><div class="ok">✓ Refills synced to the 15th · one refill</div></div></div>
+    <div class="box chatbox a" id="chatbox" style="transition-delay:1.3s"><h4>Chat with your coordinator<small>Hover (or tap) to see it</small></h4>
+      <div class="hint"><i>💬</i>Hover to see the chat</div>
+      <div class="msgs">
+        <div class="coord"><i>AR</i><div><b>Ana Ruiz</b><small>Carepak coordinator · direct line</small></div></div>
+        <div class="m"><small>Dr. Patel's office · 9:10 AM</small><p>We increased Mr. Walker's sertraline to 100 mg.</p></div>
+        <div class="m out"><small>Ana · Carepak · 9:13 AM</small><p>Updated his list. Next week's breakfast packets are changed to match.</p></div>
+        <div class="m"><small>Mr. Walker's daughter · 10:02 AM</small><p>When does his next delivery come?</p></div>
+        <div class="m out"><small>Ana · Carepak · 10:04 AM</small><p>Friday, all medications together, with his new list.</p></div>
+        <div class="cst">✓ List updated · packets changed · family informed</div>
+      </div></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="k a"><span class="num">2</span>A relationship, not a transaction</div>
+  <h2 class="a" style="transition-delay:.2s">Not a one-time patient. <em>A patient for life.</em></h2>
+  <div class="life">
+    <div class="lp a" style="transition-delay:.6s"><div class="d">⏳</div><b>Time &amp; effort</b><span>Earning one patient takes real work.</span></div>
+    <div class="lp a" style="transition-delay:1s"><div class="d">🤝</div><b>Trust</b><span>Clear answers, on-time delivery, a familiar voice.</span></div>
+    <div class="lp a" style="transition-delay:1.4s"><div class="d">💙</div><b>Loyalty</b><span>Patients and families rely on us.</span></div>
+    <div class="lp a" style="transition-delay:1.8s"><div class="d">♾</div><b>For a lifetime</b><span>Once trusted, we care for them for life.</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="k a"><span class="num">3</span>How we start: adult day care</div>
+  <h2 class="a" style="transition-delay:.2s">We start with BHI, <em>then connect everything.</em></h2>
+  <div class="flow">
+    <div class="st a" style="transition-delay:.5s"><span class="n">01</span><b>Present at adult day care</b>We meet patients where they already are.</div>
+    <div class="st a" style="transition-delay:.8s"><span class="n">02</span><b>Initial visit at day care</b>Our first visit, right where they spend their day.</div>
+    <div class="st hot a" style="transition-delay:1.1s"><span class="n">03</span><b>BHI first</b>Everyone already has a PCP. Some have a mental health clinician, some don't.</div>
+    <div class="st a" style="transition-delay:1.4s"><span class="n">04</span><b>Appointments &amp; follow-up</b>We help set up appointments and follow up.</div>
+    <div class="st a" style="transition-delay:1.7s"><span class="n">05</span><b>Add CCM</b>The relationship grows with chronic care management.</div>
+    <div class="st a" style="transition-delay:2s"><span class="n">06</span><b>Pharmacist review</b>Suggestions and recommendations for every medication.</div>
+    <div class="st a" style="transition-delay:2.3s"><span class="n">07</span><b>OTC &amp; DME needs</b>We find what they need and take care of it.</div>
+    <div class="st hot a" style="transition-delay:2.6s"><span class="n">08</span><b>Need to see the MD?</b>We connect them right away to their PCP.</div>
+  </div>
+  <div class="result a" style="transition-delay:3s">All meds synced. <em>OTC &amp; DME taken care of.</em></div>
+  <div class="note a" style="transition-delay:3.3s"><span><b>For the patient:</b> one stop for everything.</span><span><b>For the doctor:</b> a clear picture, one approval, no confusion.</span><span><b>For the practice:</b> BHI + CCM added revenue, more appointments, an organized workflow.</span></div>
+</section>
+
+<section class="slide">
+  <div class="k a"><span class="num">4</span>Even smoother</div>
+  <h2 class="a" style="transition-delay:.2s">Everything the patient needs, <em>in one place.</em></h2>
+  <div class="all">
+    <div class="c a" style="transition-delay:.4s"><i>🧴</i><b>OTC</b><span>Vitamins and over-the-counter products, delivered with their meds.</span></div>
+    <div class="c a" style="transition-delay:.55s"><i>🦽</i><b>DME</b><span>Durable medical equipment through the same team.</span></div>
+    <div class="c a" style="transition-delay:.7s"><i>🩸</i><b>Supplies</b><span>Diabetes supplies such as test strips.</span></div>
+    <div class="c a" style="transition-delay:.85s"><i>📟</i><b>Devices</b><span>Monitoring devices such as CGMs and BP cuffs.</span></div>
+    <div class="c a" style="transition-delay:1s"><i>🩺</i><b>Primary care</b><span>Connected to their PCP for every visit and refill.</span></div>
+    <div class="c a" style="transition-delay:1.15s"><i>🧠</i><b>Mental health</b><span>BHI check-ins and mental health support.</span></div>
+    <div class="c hot a" style="transition-delay:1.3s;grid-column:span 2"><i>🤝</i><b>Collaborative practice agreement</b><span>We can handle prior authorizations and protocol-based medication changes, so the clinic runs smoothly too.</span></div>
+  </div>
+  <div class="close sm a" style="transition-delay:1.9s"><div><h3>Care, built around you. <em>Let's start with your BHI patients.</em></h3><small>1.800.601.7092 Ext. 802 · contact@carepakpharmacy.com</small></div><span class="cta">CONSULT WITH US →</span></div>
+</section>
+
+<div class="fine">Retention reported by Carepak. Services subject to prescriptions, plan requirements and applicable agreements.</div>
+</div>
+
+<div class="bar"><button id="prev" aria-label="Previous slide">◀</button><button id="play">Pause</button><button id="next" aria-label="Next slide">▶</button><div class="dots" id="dots"></div><button class="fs" id="fs">⤢ Full screen</button></div>
+
+<script>
+(function () {
+  var slides = [].slice.call(document.querySelectorAll(".slide")), dots = document.getElementById("dots");
+  var TIME = [9000, 12000, 12000, 18000, 11000, 18000, 14000], cur = 0, timer = null, paused = false;
+  slides.forEach(function (_, i) { var b = document.createElement("button"); b.setAttribute("aria-label", "Slide " + (i + 1)); b.onclick = function () { go(i); }; dots.appendChild(b); });
+  function count() {
+    var el = document.getElementById("cnt"), n = 0; el.textContent = "0";
+    var t = setInterval(function () { n += 3; if (n >= 95) { n = 95; clearInterval(t); } el.textContent = n; }, 28);
+  }
+  function go(i) {
+    cur = (i + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle("on", k === cur); });
+    [].forEach.call(dots.children, function (d, k) { d.classList.toggle("on", k === cur); });
+    if (cur === 1) setTimeout(count, 300);
+    clearTimeout(timer); if (!paused) timer = setTimeout(function () { go(cur + 1); }, TIME[cur]);
+  }
+  document.getElementById("prev").onclick = function () { go(cur - 1); };
+  document.getElementById("next").onclick = function () { go(cur + 1); };
+  document.getElementById("play").onclick = function () { paused = !paused; this.textContent = paused ? "Play" : "Pause"; go(cur); };
+  document.getElementById("stage").onclick = function () { go(cur + 1); };
+  document.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") go(cur + 1); if (e.key === "ArrowLeft") go(cur - 1); if (e.key === " ") { e.preventDefault(); document.getElementById("play").click(); } });
+  var fs = document.getElementById("fs"), root = document.documentElement;
+  fs.onclick = function () {
+    if (document.fullscreenElement) return document.exitFullscreen();
+    if (root.requestFullscreen) root.requestFullscreen().catch(function () { window.open(location.href, "_blank"); }); else window.open(location.href, "_blank");
+  };
+  document.addEventListener("fullscreenchange", function () { fs.textContent = document.fullscreenElement ? "✕ Exit full screen" : "⤢ Full screen"; });
+  var cb = document.getElementById("chatbox");
+  cb.addEventListener("mouseenter", function () { clearTimeout(timer); });
+  cb.addEventListener("mouseleave", function () { if (!paused) timer = setTimeout(function () { go(cur + 1); }, 6000); });
+  cb.addEventListener("click", function (e) { e.stopPropagation(); cb.classList.toggle("open"); clearTimeout(timer); });
+  go(0);
+})();
+</script>
+</body></html>
