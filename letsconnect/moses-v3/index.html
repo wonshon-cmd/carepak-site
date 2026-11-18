@@ -103,6 +103,7 @@ em{font-style:normal;color:var(--blue)}
 /* everything in one place */
 .all{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1cqw;margin-top:.4cqw}
 .all .c{padding:1.3cqw}.all .c b{font-size:1.5cqw}.all .c span{font-size:1.12cqw}
+.all .c.hot2{border:.18cqw solid var(--blue);background:var(--wash)}
 .close.sm{margin-top:1.8cqw;padding:1.3cqw 2cqw}.close.sm h3{font-size:2cqw}
 /* controls */
 .bar{display:flex;align-items:center;gap:.8vw;font-size:max(12px,.9vw)}
@@ -140,17 +141,6 @@ em{font-style:normal;color:var(--blue)}
 </section>
 
 <section class="slide">
-  <div class="k a"><span class="num">1</span>Why it works</div>
-  <h2 class="a" style="transition-delay:.2s">Less confused patients <em>stay in care.</em></h2>
-  <div class="vs">
-    <div class="side bad a" style="transition-delay:.6s"><h3>Without Carepak</h3><ul><li>Bottles everywhere, which pill when?</li><li>Refills due on 6 different days</li><li>Calls to the doctor, the pharmacy, the plan</li><li>Missed doses, missed visits</li></ul></div>
-    <div class="arrowR a" style="transition-delay:1.1s">→</div>
-    <div class="side good a" style="transition-delay:1.4s"><h3>With Carepak</h3><ul><li>One packet per dose, clearly labeled</li><li>One reconciled list, one refill date</li><li>One coordinator to call or chat</li><li>Patients understand and keep coming back</li></ul></div>
-  </div>
-  <div class="result a" style="transition-delay:2s">No confusion → better adherence → <em>patients stay in care.</em><br><span style="font-size:1.55cqw;color:var(--muted);font-weight:500">It works best when we work together with providers.</span></div>
-</section>
-
-<section class="slide">
   <div class="k a">See it for yourself</div>
   <h2 class="a" style="transition-delay:.2s">Packaged, reconciled, <em>and always one message away.</em></h2>
   <div class="see">
@@ -169,6 +159,17 @@ em{font-style:normal;color:var(--blue)}
         <div class="cst">✓ List updated · packets changed · family informed</div>
       </div></div>
   </div>
+</section>
+
+<section class="slide">
+  <div class="k a"><span class="num">1</span>Why it works</div>
+  <h2 class="a" style="transition-delay:.2s">Less confused patients <em>stay in care.</em></h2>
+  <div class="vs">
+    <div class="side bad a" style="transition-delay:.6s"><h3>Without Carepak</h3><ul><li>Bottles everywhere, which pill when?</li><li>Refills due on 6 different days</li><li>Calls to the doctor, the pharmacy, the plan</li><li>Missed doses, missed visits</li></ul></div>
+    <div class="arrowR a" style="transition-delay:1.1s">→</div>
+    <div class="side good a" style="transition-delay:1.4s"><h3>With Carepak</h3><ul><li>One packet per dose, clearly labeled</li><li>One reconciled list, one refill date</li><li>One coordinator to call or chat</li><li>Patients understand and keep coming back</li></ul></div>
+  </div>
+  <div class="result a" style="transition-delay:2s">No confusion → better adherence → <em>patients stay in care.</em><br><span style="font-size:1.55cqw;color:var(--muted);font-weight:500">It works best when we work together with providers.</span></div>
 </section>
 
 <section class="slide">
@@ -203,13 +204,14 @@ em{font-style:normal;color:var(--blue)}
   <div class="k a"><span class="num">4</span>Even smoother</div>
   <h2 class="a" style="transition-delay:.2s">Everything the patient needs, <em>in one place.</em></h2>
   <div class="all">
+    <div class="c hot2 a" style="transition-delay:.3s"><i>💊</i><b>Medicine</b><span>Packaged by dose, reconciled, refills synced, delivered together.</span></div>
     <div class="c a" style="transition-delay:.4s"><i>🧴</i><b>OTC</b><span>Vitamins and over-the-counter products, delivered with their meds.</span></div>
     <div class="c a" style="transition-delay:.55s"><i>🦽</i><b>DME</b><span>Durable medical equipment through the same team.</span></div>
     <div class="c a" style="transition-delay:.7s"><i>🩸</i><b>Supplies</b><span>Diabetes supplies such as test strips.</span></div>
     <div class="c a" style="transition-delay:.85s"><i>📟</i><b>Devices</b><span>Monitoring devices such as CGMs and BP cuffs.</span></div>
     <div class="c a" style="transition-delay:1s"><i>🩺</i><b>Primary care</b><span>Connected to their PCP for every visit and refill.</span></div>
     <div class="c a" style="transition-delay:1.15s"><i>🧠</i><b>Mental health</b><span>BHI check-ins and mental health support.</span></div>
-    <div class="c hot a" style="transition-delay:1.3s;grid-column:span 2"><i>🤝</i><b>Collaborative practice agreement</b><span>We can handle prior authorizations and protocol-based medication changes, so the clinic runs smoothly too.</span></div>
+    <div class="c hot a" style="transition-delay:1.3s"><i>🤝</i><b>CPA</b><span>With a collaborative practice agreement, we can handle prior authorizations, so the clinic runs smoothly too.</span></div>
   </div>
   <div class="close sm a" style="transition-delay:1.9s"><div><h3>Care, built around you. <em>Let's start with your BHI patients.</em></h3><small>1.800.601.7092 Ext. 802 · contact@carepakpharmacy.com</small></div><span class="cta">CONSULT WITH US →</span></div>
 </section>
@@ -222,7 +224,7 @@ em{font-style:normal;color:var(--blue)}
 <script>
 (function () {
   var slides = [].slice.call(document.querySelectorAll(".slide")), dots = document.getElementById("dots");
-  var TIME = [9000, 12000, 12000, 18000, 11000, 18000, 14000], cur = 0, timer = null, paused = false;
+  var TIME = [9000, 12000, 18000, 12000, 11000, 18000, 14000], cur = 0, timer = null, paused = false;
   slides.forEach(function (_, i) { var b = document.createElement("button"); b.setAttribute("aria-label", "Slide " + (i + 1)); b.onclick = function () { go(i); }; dots.appendChild(b); });
   function count() {
     var el = document.getElementById("cnt"), n = 0; el.textContent = "0";
