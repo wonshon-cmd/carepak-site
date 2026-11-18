@@ -1,0 +1,167 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Carepak × Moses</title>
+<style>
+html,body{margin:0;height:100%;background:#fff}
+body{display:flex;align-items:center;justify-content:center;font-family:Inter,Arial,Helvetica,sans-serif;color:#14232d}
+/* leave breathing room around the image, also in full screen */
+.wrap{position:relative;width:min(94vw,141vh);aspect-ratio:1536/1024;container-type:inline-size}
+:fullscreen .wrap,.fs .wrap{width:min(88vw,132vh)}
+.wrap img{display:block;width:100%;height:100%}
+svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hl{fill:rgba(29,155,226,.07);stroke:#1d9be2;stroke-width:4;opacity:0;transition:opacity .6s}
+.hl.plus{stroke:#0a6f9c;stroke-dasharray:10 7;fill:rgba(10,111,156,.06)}
+.arrow{fill:none;stroke:#1d9be2;stroke-width:4.5;stroke-linecap:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);opacity:0;transition:stroke-dashoffset 1s ease-in-out,opacity .2s}
+.arrow.on{stroke-dashoffset:0;opacity:.95}
+.badge circle{fill:#1d9be2}.badge.plus circle{fill:#0a6f9c}
+.badge text{fill:#fff;font:700 18px Inter,Arial,sans-serif;text-anchor:middle;dominant-baseline:central}
+.badge,.pill{opacity:0;transition:opacity .5s}
+.pill rect{fill:#1d9be2}.pill.dark rect{fill:#0a6f9c}
+.pill text{fill:#fff;font:700 15px Inter,Arial,sans-serif;text-anchor:middle;dominant-baseline:central;letter-spacing:.02em}
+.ring{fill:none;stroke:#1d9be2;stroke-width:7;stroke-dasharray:16 12;opacity:0;transition:opacity .8s}
+.ring.on{opacity:1;animation:flow 2.4s linear infinite}
+.halo{fill:none;stroke:#1d9be2;stroke-width:6;opacity:0;transition:opacity .8s}
+.on{opacity:1}
+@keyframes flow{to{stroke-dashoffset:-56}}
+
+/* final panel: connected care, no confusion */
+.panel{position:absolute;left:12%;top:11%;width:76%;height:78%;background:#fff;border:.13cqw solid #1d9be2;border-radius:1.4cqw;box-shadow:0 1.5cqw 4cqw rgba(20,38,49,.22);
+  padding:1.6cqw 1.8cqw;display:flex;flex-direction:column;opacity:0;transform:scale(.96);transition:opacity .7s,transform .7s;font-size:1.05cqw}
+.panel.on{opacity:1;transform:none}
+.p-k{font-size:.85cqw;font-weight:700;letter-spacing:.16em;color:#087faa}
+.p-h{font-size:2.4cqw;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:.4cqw 0 1.2cqw}.p-h em{font-style:normal;color:#039edc}
+.cols{display:grid;grid-template-columns:1fr 1.15fr 1.1fr;gap:1.1cqw;flex:1;min-height:0}
+.col{border:.07cqw solid #d9e4e9;border-radius:.9cqw;padding:.9cqw;display:flex;flex-direction:column;background:#fbfdfe;opacity:0;transform:translateY(.6cqw);transition:opacity .6s,transform .6s}
+.panel.on .col{opacity:1;transform:none}.panel.on .col:nth-child(2){transition-delay:.5s}.panel.on .col:nth-child(3){transition-delay:1s}
+.col h4{margin:0 0 .6cqw;font-size:1.25cqw;font-weight:700}.col h4 small{display:block;font-weight:500;color:#63717b;font-size:.92cqw;margin-top:.15cqw}
+/* reconciled list */
+.doc{background:#fff;border:.07cqw solid #d4e1e8;box-shadow:0 .2cqw .6cqw rgba(20,38,49,.1);padding:.7cqw .9cqw;font-size:.92cqw;flex:1}
+.doc .dh{border-bottom:.12cqw solid #039edc;padding-bottom:.2cqw;font-size:1cqw;white-space:nowrap}.doc .dh b{color:#14232d}.doc .dh span{color:#039edc}
+.doc .dp{color:#7d95a2;font-size:.8cqw;white-space:nowrap;margin:.25cqw 0 .35cqw}
+.doc table{width:100%;border-collapse:collapse}.doc th{text-align:left;color:#7d95a2;font-weight:600;font-size:.78cqw;border-bottom:.07cqw solid #e3edf2;padding:.1cqw}
+.doc td{padding:.22cqw .1cqw;border-bottom:.07cqw solid #f0f4f6;white-space:nowrap}.doc td+td,.doc th+th{text-align:center;color:#039edc;width:16%}
+.doc .ok{margin-top:.6cqw;font-size:.88cqw;color:#1f6e45;background:#edf8f3;border-radius:.4cqw;padding:.25cqw .5cqw;font-weight:600}
+/* strip packets */
+.strip{display:flex;flex:1}
+.sp{flex:1;background:linear-gradient(180deg,#f6fbfe,#e8f3f9);border-top:.07cqw solid #bcd3df;border-bottom:.07cqw solid #bcd3df;border-right:.07cqw dashed #8fb3c6;padding:.6cqw .6cqw .4cqw;display:flex;flex-direction:column;font-size:.92cqw;white-space:nowrap;line-height:1.3;color:#1d2b33}
+.sp:first-child{border-left:.07cqw solid #bcd3df;border-radius:.3cqw 0 0 .3cqw}.sp:last-child{border-right:.07cqw solid #bcd3df;border-radius:0 .3cqw .3cqw 0}
+.sp b{font-size:1cqw}.sp span{color:#56656e;font-size:.8cqw;margin-bottom:.25cqw}
+.pills{margin-top:auto;display:flex;flex-wrap:wrap;gap:.2cqw;padding:.2cqw;background:rgba(255,255,255,.6);border-radius:.25cqw}
+.pills i{width:1cqw;height:1cqw;border-radius:50%;border:.06cqw solid #c3d2da;display:inline-block}.pills i.r{width:1.2cqw;height:.55cqw;border-radius:.3cqw}
+/* coordinator chat */
+.chat{flex:1;display:flex;flex-direction:column;gap:.35cqw}
+.coord{display:flex;align-items:center;gap:.5cqw;padding-bottom:.4cqw;border-bottom:.07cqw solid #e3edf2;margin-bottom:.1cqw}
+.coord i{width:1.9cqw;height:1.9cqw;border-radius:50%;background:#039edc;color:#fff;font-style:normal;font-weight:700;font-size:.8cqw;display:grid;place-items:center}
+.coord b{display:block;font-size:1.05cqw}.coord small{color:#63717b;font-size:.82cqw}
+.m{max-width:92%;opacity:0;transform:translateY(.3cqw);transition:opacity .4s,transform .4s}.m small{display:block;color:#7d95a2;font-size:.74cqw;margin:0 .2cqw .1cqw}
+.m p{margin:0;background:#f1f5f7;border-radius:.15cqw .6cqw .6cqw .6cqw;padding:.4cqw .65cqw;font-size:.95cqw;line-height:1.35}
+.m.out{align-self:flex-end}.m.out small{text-align:right}.m.out p{background:#e6f5fc;border-radius:.6cqw .15cqw .6cqw .6cqw}
+.m.on{opacity:1;transform:none}
+.st{margin-top:auto;background:#edf8f3;color:#1f6e45;border-radius:.4cqw;padding:.4cqw .6cqw;font-size:.9cqw;font-weight:600;opacity:0;transition:opacity .4s}.st.on{opacity:1}
+.p-foot{margin-top:1cqw;font-size:1.05cqw;color:#63717b;display:flex;gap:1.4cqw}.p-foot b{color:#087faa}
+@media (prefers-reduced-motion:reduce){.hl,.badge,.pill{opacity:1}.arrow{stroke-dashoffset:0;opacity:.95}.ring,.halo{opacity:.9}}
+</style></head><body>
+<div class="wrap">
+  <img src="../moses/carepak-moses.webp" alt="Carepak × Moses: one patient, fully connected. The patient starts with BHI monthly check-ins and mental health care, is connected to primary care, then medication management and OTC, DME and diabetes supplies, all connected around the patient. Telehealth access and a collaborative practice agreement make it even more seamless.">
+  <svg viewBox="0 0 1536 1024" aria-hidden="true">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1d9be2"/></marker>
+      <mask id="gaps"><rect width="1536" height="1024" fill="#fff"/>
+        <rect x="650" y="143" width="236" height="186" rx="18" fill="#000"/><rect x="452" y="269" width="198" height="168" rx="18" fill="#000"/>
+        <rect x="887" y="269" width="202" height="170" rx="18" fill="#000"/><rect x="376" y="454" width="220" height="214" rx="18" fill="#000"/>
+        <rect x="438" y="688" width="257" height="190" rx="18" fill="#000"/><rect x="937" y="461" width="225" height="205" rx="18" fill="#000"/>
+        <rect x="825" y="688" width="278" height="187" rx="18" fill="#000"/><circle cx="767" cy="540" r="172" fill="#000"/></mask>
+    </defs>
+    <circle class="ring" id="ring" cx="767" cy="540" r="302" mask="url(#gaps)"/>
+    <circle class="halo" id="halo" cx="767" cy="540" r="168"/>
+
+    <rect class="hl" id="hlM" x="652" y="145" width="232" height="182" rx="18"/>
+    <rect class="hl" id="hlMH" x="890" y="271" width="196" height="166" rx="18"/>
+    <rect class="hl" id="hlPC" x="455" y="271" width="192" height="164" rx="18"/>
+    <rect class="hl" id="hlMed" x="379" y="457" width="214" height="208" rx="18"/>
+    <rect class="hl" id="hlOTC" x="441" y="691" width="251" height="184" rx="18"/>
+    <rect class="hl plus" id="hlTele" x="940" y="464" width="219" height="199" rx="18"/>
+    <rect class="hl plus" id="hlCPA" x="828" y="691" width="272" height="181" rx="18"/>
+
+    <path class="arrow" id="aMMH" d="M886 212 C938 210 978 228 988 262" style="--len:140" marker-end="url(#ah)"/>
+    <path class="arrow" id="aLink" d="M880 352 L655 352" style="--len:230" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arrow" id="aPCMed" d="M452 382 C402 396 394 422 410 450" style="--len:110" marker-end="url(#ah)"/>
+    <path class="arrow" id="aMedOTC" d="M402 668 C398 700 414 726 436 742" style="--len:100" marker-end="url(#ah)"/>
+
+    <g class="badge" id="b1"><circle cx="652" cy="145" r="16"/><text x="652" y="146">1</text></g>
+    <g class="badge" id="b2"><circle cx="1086" cy="271" r="16"/><text x="1086" y="272">2</text></g>
+    <g class="badge" id="b3"><circle cx="455" cy="271" r="16"/><text x="455" y="272">3</text></g>
+    <g class="badge" id="b4"><circle cx="379" cy="457" r="16"/><text x="379" y="458">4</text></g>
+    <g class="badge" id="b5"><circle cx="441" cy="691" r="16"/><text x="441" y="692">5</text></g>
+    <g class="badge plus" id="bT"><circle cx="1159" cy="464" r="16"/><text x="1159" y="464">+</text></g>
+    <g class="badge plus" id="bC"><circle cx="1100" cy="691" r="16"/><text x="1100" y="691">+</text></g>
+
+    <g class="pill" id="pBHI"><rect x="690" y="108" width="156" height="30" rx="15"/><text x="768" y="124">Starts with BHI</text></g>
+    <g class="pill" id="pLink"><rect x="660" y="338" width="216" height="28" rx="14"/><text x="768" y="353">Connected to primary care</text></g>
+    <g class="pill" id="pAll"><rect x="690" y="828" width="150" height="30" rx="15"/><text x="765" y="844">All connected</text></g>
+    <g class="pill dark" id="pPlus"><rect x="912" y="664" width="210" height="28" rx="14"/><text x="1017" y="679">+ Even more seamless</text></g>
+  </svg>
+
+  <div class="panel" id="panel" aria-hidden="true">
+    <div class="p-k">CONNECTED CARE</div>
+    <div class="p-h">No confusion for the <em>patient or the provider.</em></div>
+    <div class="cols">
+      <div class="col"><h4>Reconciled medication list<small>One list your office and the patient share</small></h4>
+        <div class="doc"><div class="dh"><span>(</span><b>Carepak</b><span>)</span> Medication reconciliation</div>
+          <div class="dp">James Walker · Dr. Patel (PCP) · Moses BHI</div>
+          <table><tr><th>Medication</th><th>B</th><th>L</th><th>D</th></tr>
+            <tr><td>Sertraline 50 mg</td><td>●</td><td></td><td></td></tr>
+            <tr><td>Lisinopril 10 mg</td><td>●</td><td></td><td></td></tr>
+            <tr><td>Metformin 500 mg</td><td>●</td><td></td><td>●</td></tr>
+            <tr><td>Vitamin D3 1000 IU</td><td></td><td>●</td><td></td></tr>
+            <tr><td>Gabapentin 300 mg</td><td></td><td>●</td><td></td></tr>
+            <tr><td>Atorvastatin 20 mg</td><td></td><td></td><td>●</td></tr>
+            <tr><td>Aripiprazole 5 mg</td><td></td><td></td><td>●</td></tr></table>
+          <div class="ok">✓ Refills synced to the 15th · one refill</div></div></div>
+      <div class="col"><h4>Packaged by dose<small>Every packet matches the list</small></h4>
+        <div class="strip">
+          <div class="sp"><b>BREAKFAST</b><span>MON · 8:00 AM</span>Sertraline 50 mg<br>Lisinopril 10 mg<br>Metformin 500 mg<div class="pills"><i style="background:#fff"></i><i class="r" style="background:#f6d365"></i><i style="background:#9fd3f0"></i></div></div>
+          <div class="sp"><b>LUNCH</b><span>MON · 12:00 PM</span>Vitamin D3 1000 IU<br>Gabapentin 300 mg<div class="pills"><i style="background:#f6c28b"></i><i class="r" style="background:#c5b5f2"></i></div></div>
+          <div class="sp"><b>DINNER</b><span>MON · 6:00 PM</span>Metformin 500 mg<br>Atorvastatin 20 mg<br>Aripiprazole 5 mg<div class="pills"><i style="background:#9fd3f0"></i><i style="background:#fff"></i><i class="r" style="background:#a8e0c4"></i></div></div>
+        </div></div>
+      <div class="col"><h4>Chat with a designated coordinator<small>One person who knows the patient</small></h4>
+        <div class="chat">
+          <div class="coord"><i>AR</i><div><b>Ana Ruiz</b><small>Your Carepak coordinator · direct line</small></div></div>
+          <div class="m" id="m1"><small>Moses care manager · 9:10 AM</small><p>Mr. Walker's PHQ-9 is improving. Dr. Patel adjusted his metformin.</p></div>
+          <div class="m out" id="m2"><small>Ana · Carepak · 9:14 AM</small><p>Got it. His list is updated and next week's packets are changed to match.</p></div>
+          <div class="m out" id="m3"><small>Ana · Carepak · 9:15 AM</small><p>Delivery to his home Friday. I'll text his daughter too.</p></div>
+          <div class="st" id="st">✓ List updated · packets changed · family notified</div>
+        </div></div>
+    </div>
+    <div class="p-foot"><span><b>One list.</b> No conflicting instructions.</span><span><b>One packet per dose.</b> No guessing.</span><span><b>One coordinator.</b> No phone tag.</span></div>
+  </div>
+</div>
+<script>
+(function () {
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var steps = [
+    [0,     ["hlM", "b1", "pBHI"]],                          // 1. Starts with BHI: monthly check-in
+    [1500,  ["aMMH"]],
+    [2300,  ["hlMH", "b2"]],                                 // 2. Mental health
+    [3700,  ["aLink", "pLink"]],                             // connected to primary care
+    [4500,  ["hlPC", "b3"]],                                 // 3. Primary care
+    [5900,  ["aPCMed"]],
+    [6700,  ["hlMed", "b4"]],                                // 4. Medication management
+    [8100,  ["aMedOTC"]],
+    [8900,  ["hlOTC", "b5"]],                                // 5. OTC, DME & diabetes supplies
+    [10300, ["ring", "halo", "pAll"]],                       // all connected around the patient
+    [12300, ["hlTele", "hlCPA", "bT", "bC", "pPlus"]],      // + telehealth and CPA: even more seamless
+    [15300, ["panel"]],                                      // connected care: no confusion
+    [17300, ["m1"]], [18600, ["m2"]], [19700, ["m3"]], [20700, ["st"]]
+  ];
+  var ids = [].concat.apply([], steps.map(function (s) { return s[1]; }));
+  function run() {
+    ids.forEach(function (id) { $(id).classList.remove("on"); });
+    steps.forEach(function (s) { setTimeout(function () { s[1].forEach(function (id) { $(id).classList.add("on"); }); }, s[0] + 500); });
+    setTimeout(run, 28500);
+  }
+  run();
+  document.addEventListener("fullscreenchange", function () { document.body.classList.toggle("fs", !!document.fullscreenElement); });
+})();
+</script>
+</body></html>
